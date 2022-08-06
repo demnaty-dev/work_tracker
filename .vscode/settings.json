@@ -1,0 +1,21 @@
+{
+  "window.zoomLevel": 1,
+  "editor.fontFamily": "'cascadia code'",
+  "editor.fontLigatures": true,
+  "editor.wordWrap": "on",
+  "editor.cursorBlinking": "expand",
+  "editor.minimap.enabled": true,
+  "editor.minimap.autohide": true,
+  "editor.guides.bracketPairsHorizontal": "active",
+  "editor.guides.bracketPairs": "active",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "files.exclude": {
+    "**/.dart_tool": true,
+    "**/.idea": true,
+    "../.git":false
+  },
+  "dart.lineLength": 160,
+  "dart.previewFlutterUiGuides": true
+}
