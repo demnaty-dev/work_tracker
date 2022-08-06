@@ -1,46 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:work_tracker/src/constants/palette.dart';
-import 'package:work_tracker/src/features/settings/dark_theme_provider.dart';
 
+import 'features/settings/dark_theme_provider.dart';
+
+import 'constants/palette.dart';
 import 'constants/theme.dart';
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  final DarkThemeProvider themeChangeProvider = DarkThemeProvider();
-
-  @override
-  void initState() {
-    super.initState();
-    getCurrentAppTheme();
-  }
-
-  void getCurrentAppTheme() async {
-    themeChangeProvider.darkTheme = await themeChangeProvider.darkThemePreference.getTheme();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => themeChangeProvider,
-      child: Consumer<DarkThemeProvider>(
-        builder: (_, value, __) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
-            theme: lightThemeData,
-            darkTheme: darkThemeData,
-            themeMode: value.darkTheme ? ThemeMode.dark : ThemeMode.light,
-            home: const MyHomePage(),
-          );
-        },
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Demo',
+      theme: lightThemeData,
+      darkTheme: darkThemeData,
+      themeMode: context.watch<DarkThemeProvider>().darkTheme ? ThemeMode.dark : ThemeMode.light,
+      home: const MyHomePage(),
     );
   }
 }
