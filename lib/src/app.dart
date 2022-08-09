@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:work_tracker/src/features/Authentication/pages/forgot_password.dart';
 
 import 'features/Authentication/models/user_model.dart';
 import 'features/Authentication/pages/log_in.dart';
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Work Tracker',
       theme: lightThemeData,
       darkTheme: darkThemeData,
       themeMode: context.watch<DarkThemeProvider>().darkTheme ? ThemeMode.dark : ThemeMode.light,
@@ -27,6 +28,9 @@ class MyApp extends StatelessWidget {
           return const LogIn();
         },
       ),
+      routes: {
+        ForgotPassword.routeName: (_) => const ForgotPassword(),
+      },
     );
   }
 }

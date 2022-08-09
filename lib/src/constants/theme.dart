@@ -49,6 +49,8 @@ final lightThemeData = ThemeData(
   primaryColor: primaryColor,
   scaffoldBackgroundColor: bgColorLightTheme,
   textTheme: lightTextTheme,
+  textButtonTheme: textButtonTheme,
+  elevatedButtonTheme: elevatedButtonTheme,
   //elevatedButtonTheme: elevatedButtonThemeData,
   //colorScheme: ThemeData.light().colorScheme.copyWith(secondary: secondaryColorLightTheme),
 );
@@ -96,5 +98,28 @@ final darkThemeData = ThemeData(
   primaryColor: primaryColor,
   scaffoldBackgroundColor: bgColorDarkTheme,
   textTheme: darkTextTheme,
+  textButtonTheme: textButtonTheme,
+  elevatedButtonTheme: elevatedButtonTheme,
   //colorScheme: ThemeData.dark().colorScheme.copyWith(secondary: secondaryColorDarkTheme),
+);
+
+TextButtonThemeData textButtonTheme = TextButtonThemeData(
+  style: TextButton.styleFrom(
+    primary: primaryColor,
+    minimumSize: const Size(88, 36),
+    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(2.0)),
+    ),
+  ),
+);
+ElevatedButtonThemeData elevatedButtonTheme = ElevatedButtonThemeData(
+  style: ElevatedButton.styleFrom(
+    onPrimary: Colors.white,
+    primary: primaryColor,
+    minimumSize: const Size(double.infinity, 48),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(16)),
+    ),
+  ),
 );

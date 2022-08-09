@@ -31,4 +31,8 @@ class AuthenticationServices {
   UserModel? currentUser() {
     return _userFromFirebase(_firebaseAuth.currentUser);
   }
+
+  Future<void> resetPassword(String email) async {
+    return _firebaseAuth.sendPasswordResetEmail(email: email);
+  }
 }
