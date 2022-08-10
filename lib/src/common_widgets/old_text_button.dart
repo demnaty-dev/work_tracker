@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:work_tracker/src/constants/palette.dart';
-import 'package:work_tracker/src/constants/theme.dart';
 
 class OldTextButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -15,12 +13,7 @@ class OldTextButton extends StatelessWidget {
       child: Text(
         text,
         textAlign: TextAlign.end,
-        style: const TextStyle(
-          fontFamily: 'Poppins',
-          color: textColorLightTheme,
-          fontWeight: medium,
-          fontSize: 14,
-        ),
+        style: Theme.of(context).textTheme.subtitle2,
       ),
     );
   }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:work_tracker/src/constants/theme.dart';
+import 'package:provider/provider.dart';
+import 'package:work_tracker/src/features/settings/services/dark_theme_provider.dart';
 
+import '../constants/theme.dart';
 import '../constants/palette.dart';
 
 class OldTextField extends StatelessWidget {
@@ -41,11 +43,11 @@ class OldTextField extends StatelessWidget {
       obscureText: obscureText,
       enableSuggestions: false,
       autocorrect: false,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 16,
         fontWeight: medium,
         fontFamily: 'Poppins',
-        color: textColorLightTheme,
+        color: context.read<DarkThemeProvider>().darkTheme ? textColorDarkTheme : textColorLightTheme,
       ),
       onSaved: onSaved,
       validator: validator,

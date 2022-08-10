@@ -26,13 +26,18 @@ final lightTextTheme = oldLightTextTheme.copyWith(
     fontFamily: 'poppins',
     fontSize: 18,
     fontWeight: medium,
-    color: primaryColor,
+    color: textColorLightTheme,
   ),
-  subtitle1: oldLightTextTheme.subtitle1?.copyWith(fontFamily: 'poppins'),
+  subtitle1: oldLightTextTheme.subtitle1?.copyWith(
+    fontFamily: 'poppins',
+    fontSize: 16,
+    fontWeight: regular,
+    color: textColorLightTheme,
+  ),
   subtitle2: oldLightTextTheme.subtitle2?.copyWith(
     fontFamily: 'poppins',
     fontSize: 14,
-    fontWeight: regular,
+    fontWeight: medium,
     color: textColorLightTheme,
   ),
   bodyText1: oldLightTextTheme.bodyText1?.copyWith(
@@ -52,7 +57,7 @@ final lightThemeData = ThemeData(
   textButtonTheme: textButtonTheme,
   elevatedButtonTheme: elevatedButtonTheme,
   //elevatedButtonTheme: elevatedButtonThemeData,
-  //colorScheme: ThemeData.light().colorScheme.copyWith(secondary: secondaryColorLightTheme),
+  colorScheme: ThemeData.light().colorScheme.copyWith(secondary: secondaryColorLightTheme),
 );
 
 // Light Text Theme
@@ -75,13 +80,18 @@ final darkTextTheme = oldDarkTextTheme.copyWith(
     fontFamily: 'poppins',
     fontSize: 18,
     fontWeight: medium,
-    color: primaryColor,
+    color: textColorDarkTheme,
   ),
-  subtitle1: oldDarkTextTheme.subtitle1?.copyWith(fontFamily: 'poppins'),
+  subtitle1: oldDarkTextTheme.subtitle1?.copyWith(
+    fontFamily: 'poppins',
+    fontSize: 16,
+    fontWeight: regular,
+    color: textColorDarkTheme,
+  ),
   subtitle2: oldDarkTextTheme.subtitle2?.copyWith(
     fontFamily: 'poppins',
     fontSize: 14,
-    fontWeight: regular,
+    fontWeight: medium,
     color: textColorDarkTheme,
   ),
   bodyText1: oldDarkTextTheme.bodyText1?.copyWith(
@@ -100,7 +110,7 @@ final darkThemeData = ThemeData(
   textTheme: darkTextTheme,
   textButtonTheme: textButtonTheme,
   elevatedButtonTheme: elevatedButtonTheme,
-  //colorScheme: ThemeData.dark().colorScheme.copyWith(secondary: secondaryColorDarkTheme),
+  colorScheme: ThemeData.dark().colorScheme.copyWith(secondary: secondaryColorDarkTheme),
 );
 
 TextButtonThemeData textButtonTheme = TextButtonThemeData(

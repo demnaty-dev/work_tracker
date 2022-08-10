@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:work_tracker/src/common_widgets/old_text_button.dart';
-import 'package:work_tracker/src/features/Authentication/pages/forgot_password.dart';
-import 'package:work_tracker/src/features/Authentication/services/authentication_services.dart';
+import 'forgot_password.dart';
+import '../services/authentication_services.dart';
 
+import '../../../common_widgets/old_text_button.dart';
 import '../../../common_widgets/old_button.dart';
 import '../../../common_widgets/old_text_field.dart';
 

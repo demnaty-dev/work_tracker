@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:work_tracker/src/features/Authentication/pages/forgot_password.dart';
+import 'package:work_tracker/src/features/profile/pages/profile.dart';
 
 import 'features/Authentication/models/user_model.dart';
 import 'features/Authentication/pages/log_in.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         ForgotPassword.routeName: (_) => const ForgotPassword(),
+        Profile.routeName: (_) => const Profile(),
       },
     );
   }
