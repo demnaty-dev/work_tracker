@@ -60,6 +60,7 @@ class _HomeState extends State<Home> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
+        color: Theme.of(context).scaffoldBackgroundColor,
         shape: const CircularNotchedRectangle(),
         notchMargin: 10,
         child: SizedBox(

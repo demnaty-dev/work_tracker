@@ -7,6 +7,7 @@ import '../constants/palette.dart';
 
 class OldTextField extends StatelessWidget {
   final String placeholder;
+  final String? text;
   final bool obscureText;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
@@ -15,7 +16,8 @@ class OldTextField extends StatelessWidget {
   const OldTextField({
     Key? key,
     required this.placeholder,
-    required this.obscureText,
+    this.text,
+    this.obscureText = false,
     this.keyboardType,
     this.validator,
     required this.onSaved,
@@ -24,6 +26,7 @@ class OldTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      initialValue: text,
       keyboardType: keyboardType,
       decoration: InputDecoration(
         border: const OutlineInputBorder(

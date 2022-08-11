@@ -24,17 +24,19 @@ class _LogInState extends State<LogIn> {
   String _password = '';
 
   Future<void> _trySubmit() async {
-    if (_formKey.currentState == null) return;
+    //if (_formKey.currentState == null) return;
 
-    final isValid = _formKey.currentState!.validate();
-    FocusScope.of(context).unfocus();
+    //final isValid = _formKey.currentState!.validate();
+    const isValid = true;
+    //FocusScope.of(context).unfocus();
 
     if (isValid) {
-      _formKey.currentState!.save();
+      //_formKey.currentState!.save();
 
       setState(() => _isLoading = true);
       try {
-        await context.read<AuthenticationServices>().signInWithEmailAndPassword(_userEmail, _password);
+        //await context.read<AuthenticationServices>().signInWithEmailAndPassword(_userEmail, _password);
+        await context.read<AuthenticationServices>().signInWithEmailAndPassword('abdelhakimdaryf@gmail.com', 'password');
       } on FirebaseAuthException catch (err) {
         debugPrint(err.code);
         debugPrint(err.message);
@@ -47,10 +49,9 @@ class _LogInState extends State<LogIn> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(message),
+            backgroundColor: Theme.of(context).errorColor,
           ),
         );
-      } finally {
-        setState(() => _isLoading = false);
       }
     }
   }
@@ -88,7 +89,6 @@ class _LogInState extends State<LogIn> {
                       const SizedBox(height: 40),
                       OldTextField(
                         placeholder: 'Enter your email',
-                        obscureText: false,
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           final emailForm = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');

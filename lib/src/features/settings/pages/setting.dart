@@ -28,7 +28,7 @@ class Setting extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 24),
-                GestureDetector(
+                InkWell(
                   onTap: () => Navigator.pushNamed(context, Profile.routeName),
                   child: Container(
                     height: 60,

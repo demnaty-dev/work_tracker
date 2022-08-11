@@ -31,6 +31,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       setState(() => _isLoading = true);
       try {
         await context.read<AuthenticationServices>().resetPassword(_userEmail);
+        onSuccess();
       } on FirebaseAuthException catch (err) {
         debugPrint(err.code);
         debugPrint(err.message);
@@ -41,12 +42,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(message),
+            backgroundColor: Theme.of(context).errorColor,
           ),
         );
       } finally {
         setState(() => _isLoading = false);
       }
-      onSuccess();
     }
   }
 
@@ -77,7 +78,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               const SizedBox(height: 40),
               OldTextField(
                 placeholder: 'Enter your email',
-                obscureText: false,
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   final emailForm = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
