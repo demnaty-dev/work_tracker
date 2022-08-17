@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:work_tracker/src/features/profile/services/profile_service.dart';
 
 import 'src/app.dart';
-import 'src/features/settings/services/dark_theme_provider.dart';
+import 'firebase_options.dart';
 import 'src/features/Authentication/services/authentication_services.dart';
+import 'src/features/settings/services/dark_theme_provider.dart';
+import 'src/features/profile/services/profile_service.dart';
+import 'src/features/inbox/services/inbox_services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp();
+  Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   final DarkThemeProvider themeChangeProvider = DarkThemeProvider();
   themeChangeProvider.darkTheme = await themeChangeProvider.darkThemePreference.getTheme();
@@ -23,7 +27,20 @@ void main() async {
           create: (context) => context.read<AuthenticationServices>().onAuthStateChanged,
           initialData: false,
         ),
-        Provider(create: (_) => ProfileService()),
+        ProxyProvider<bool, ProfileService?>(
+          update: (context, value, __) {
+            final user = context.read<AuthenticationServices>().currentUser();
+            if (user == null) return null;
+            return ProfileService(user);
+          },
+        ),
+        ProxyProvider<bool, InboxServices?>(
+          update: (context, value, __) {
+            final user = context.read<AuthenticationServices>().currentUser();
+            if (user == null) return null;
+            return InboxServices(user);
+          },
+        ),
       ],
       child: const MyApp(),
     ),

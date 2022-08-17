@@ -7,7 +7,6 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../profile/services/profile_service.dart';
 import '../../Authentication/models/user_model.dart';
-import '../../Authentication/services/authentication_services.dart';
 import '../../../common_widgets/old_text_field.dart';
 import '../../../constants/palette.dart';
 
@@ -42,7 +41,7 @@ class _EditProfileState extends State<EditProfile> {
       final user = _userModel as UserModel;
       if (_pickedImage != null || _displayName != user.displayName || _phone != user.phone) {
         try {
-          await context.read<ProfileService>().updateUser(
+          await context.read<ProfileService?>()!.updateUser(
                 user,
                 _pickedImage,
                 _displayName!,
@@ -173,10 +172,9 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final profSer = context.read<ProfileService>();
+    final profSer = context.read<ProfileService?>()!;
     if (profSer.userModel == null) {
-      final user = context.read<AuthenticationServices>().currentUser();
-      _userModel = context.read<ProfileService>().userFromFirebase(user);
+      _userModel = profSer.userFromFirebase();
     } else {
       _userModel = profSer.userModel!;
     }

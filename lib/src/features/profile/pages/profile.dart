@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:work_tracker/src/features/profile/services/profile_service.dart';
 
 import '../../../constants/palette.dart';
 import '../../Authentication/models/user_model.dart';
-import '../../Authentication/services/authentication_services.dart';
 import '../../profile/pages/edit_profile.dart';
 import '../../settings/services/dark_theme_provider.dart';
+import '../services/profile_service.dart';
 
 class Profile extends StatelessWidget {
   static const routeName = '/profile';
@@ -16,8 +15,7 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final user = context.read<AuthenticationServices>().currentUser();
-    final userModel = context.read<ProfileService>().userFromFirebase(user);
+    final userModel = context.read<ProfileService?>()!.userFromFirebase();
 
     return Scaffold(
       body: SafeArea(

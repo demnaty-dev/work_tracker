@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' show User;
 import 'package:firebase_storage/firebase_storage.dart';
 
 import '../../Authentication/models/user_model.dart';
@@ -9,24 +9,22 @@ import '../../Authentication/models/user_model.dart';
 class ProfileService {
   final DatabaseReference _dataRef;
   final Reference _storageRef;
+  final User _user;
   UserModel? _userModel;
 
-  ProfileService()
+  ProfileService(this._user)
       : _storageRef = FirebaseStorage.instance.ref(),
         _dataRef = FirebaseDatabase.instance.ref();
 
   UserModel? get userModel => _userModel;
 
-  Future<UserModel?> userFromFirebase(User? user) async {
-    _userModel = null;
-    if (user == null) return _userModel;
-
-    final snapshot = await _dataRef.child('users/${user.uid}').get();
+  Future<UserModel?> userFromFirebase() async {
+    final snapshot = await _dataRef.child('users/${_user.uid}').get();
 
     if (snapshot.exists) {
       Map<String, dynamic> userData = Map<String, dynamic>.from(snapshot.value as Map);
       _userModel = UserModel(
-        uid: user.uid,
+        uid: _user.uid,
         displayName: userData['Name'],
         email: userData['Email'],
         phone: userData['Phone'],
@@ -38,15 +36,15 @@ class ProfileService {
   }
 
   Future<void> updateUser(
-    UserModel user,
+    UserModel userModel,
     File? image,
     String displayName,
     String phone,
   ) async {
-    String imageUrl = user.photoUrl;
+    String imageUrl = userModel.photoUrl;
     if (image != null) {
       final exts = image.path.substring(image.path.lastIndexOf('.'));
-      final ref = _storageRef.child('profiles_image').child('${user.uid}$exts');
+      final ref = _storageRef.child('profiles_image').child('${_user.uid}$exts');
       await ref.putFile(image);
       imageUrl = await ref.getDownloadURL();
     }
@@ -57,6 +55,6 @@ class ProfileService {
       'imageUrl': imageUrl,
     };
 
-    await _dataRef.child('users/${user.uid}').update(userInfo);
+    await _dataRef.child('users/${_user.uid}').update(userInfo);
   }
 }
