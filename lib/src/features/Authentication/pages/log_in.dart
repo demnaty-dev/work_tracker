@@ -38,13 +38,16 @@ class _LogInState extends State<LogIn> {
         //await context.read<AuthenticationServices>().signInWithEmailAndPassword(_userEmail, _password);
         await context.read<AuthenticationServices>().signInWithEmailAndPassword('abdelhakimdaryf@gmail.com', 'password');
       } on FirebaseAuthException catch (err) {
-        debugPrint(err.code);
-        debugPrint(err.message);
+        setState(() => _isLoading = false);
+        debugPrint('-----------------${err.code}');
+        debugPrint('-----------------${err.message}');
         String message = '';
         if (err.code == 'wrong-password') {
           message = 'The password is wrong';
         } else if (err.code == 'user-not-found') {
           message = 'There is no user with this email';
+        } else if (err.code == 'network-request-failed') {
+          message = 'Check your connection';
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

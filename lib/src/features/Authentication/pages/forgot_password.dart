@@ -38,15 +38,18 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         String message = '';
         if (err.code == 'user-not-found') {
           message = 'There is no user with this email';
+        } else if (err.code == 'network-request-failed') {
+          message = 'Check your connection';
         }
+
+        setState(() => _isLoading = false);
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(message),
             backgroundColor: Theme.of(context).errorColor,
           ),
         );
-      } finally {
-        setState(() => _isLoading = false);
       }
     }
   }
