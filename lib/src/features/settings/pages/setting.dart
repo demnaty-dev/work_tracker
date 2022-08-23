@@ -29,6 +29,7 @@ class Setting extends StatelessWidget {
               children: [
                 const SizedBox(height: 24),
                 InkWell(
+                  borderRadius: const BorderRadius.all(Radius.circular(16)),
                   onTap: () => Navigator.pushNamed(context, Profile.routeName),
                   child: Container(
                     height: 60,
@@ -55,40 +56,44 @@ class Setting extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                Container(
-                  height: 60,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: theme.colorScheme.secondary,
-                      width: 1,
-                      style: BorderStyle.solid,
-                    ),
-                    borderRadius: const BorderRadius.all(Radius.circular(16)),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Dark Mode',
-                          style: theme.textTheme.subtitle1,
+                Consumer<DarkThemeProvider>(
+                  builder: (_, v, __) {
+                    return InkWell(
+                      borderRadius: const BorderRadius.all(Radius.circular(16)),
+                      onTap: () => v.darkTheme = !v.darkTheme,
+                      child: Container(
+                        height: 60,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: theme.colorScheme.secondary,
+                            width: 1,
+                            style: BorderStyle.solid,
+                          ),
+                          borderRadius: const BorderRadius.all(Radius.circular(16)),
                         ),
-                        Consumer<DarkThemeProvider>(
-                          builder: (_, v, __) {
-                            return Switch(
-                              onChanged: (b) => v.darkTheme = b,
-                              value: v.darkTheme,
-                              activeColor: theme.primaryColor,
-                              activeTrackColor: theme.primaryColor.withAlpha(150),
-                              inactiveThumbColor: textField,
-                              inactiveTrackColor: textField.withAlpha(150),
-                            );
-                          },
-                        )
-                      ],
-                    ),
-                  ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Dark Mode',
+                                style: theme.textTheme.subtitle1,
+                              ),
+                              Switch(
+                                onChanged: (b) => v.darkTheme = b,
+                                value: v.darkTheme,
+                                activeColor: theme.primaryColor,
+                                activeTrackColor: theme.primaryColor.withAlpha(150),
+                                inactiveThumbColor: textField,
+                                inactiveTrackColor: textField.withAlpha(150),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 24),
                 TextButton.icon(
