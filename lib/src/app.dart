@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:work_tracker/src/features/Authentication/pages/forgot_password.dart';
+import 'package:work_tracker/src/features/inbox/pages/inbox_detail.dart';
 import 'package:work_tracker/src/features/profile/pages/edit_profile.dart';
 import 'package:work_tracker/src/features/profile/pages/profile.dart';
 
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         ForgotPassword.routeName: (_) => const ForgotPassword(),
         Profile.routeName: (_) => const Profile(),
         EditProfile.routeName: (_) => const EditProfile(),
+        InboxDetail.routeName: (_) => const InboxDetail(),
       },
     );
   }

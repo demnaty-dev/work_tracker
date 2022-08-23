@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'src/app.dart';
 import 'firebase_options.dart';
+import 'src/app.dart';
 import 'src/features/Authentication/services/authentication_services.dart';
 import 'src/features/settings/services/dark_theme_provider.dart';
 import 'src/features/profile/services/profile_service.dart';

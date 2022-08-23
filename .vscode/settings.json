@@ -17,5 +17,8 @@
     "../.git":false
   },
   "dart.lineLength": 160,
-  "dart.previewFlutterUiGuides": true
+  "dart.previewFlutterUiGuides": true,
+  "cSpell.words": [
+    "ARGB"
+  ]
 }
