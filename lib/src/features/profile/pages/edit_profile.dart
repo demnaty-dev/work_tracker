@@ -60,7 +60,7 @@ class _EditProfileState extends State<EditProfile> {
     final XFile? image = await picker.pickImage(
       source: ImageSource.gallery,
       imageQuality: 50,
-      maxWidth: 150,
+      maxWidth: 300,
     );
     if (image == null) return;
     setState(() {
@@ -73,7 +73,7 @@ class _EditProfileState extends State<EditProfile> {
     final XFile? image = await picker.pickImage(
       source: ImageSource.camera,
       imageQuality: 50,
-      maxWidth: 150,
+      maxWidth: 300,
     );
     if (image == null) return;
     setState(() {
@@ -192,13 +192,13 @@ class _EditProfileState extends State<EditProfile> {
                     child: Container(
                       alignment: Alignment.centerLeft,
                       child: InkWell(
-                        onTap: () => Navigator.pop(context),
-                        child: const Text(
+                        onTap: _isLoading ? null : () => Navigator.pop(context),
+                        child: Text(
                           'cancel',
                           style: TextStyle(
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w600,
-                            color: Colors.red,
+                            color: _isLoading ? Colors.grey.shade300 : Colors.red,
                           ),
                         ),
                       ),
@@ -215,7 +215,11 @@ class _EditProfileState extends State<EditProfile> {
                     child: Container(
                       alignment: Alignment.centerRight,
                       child: _isLoading
-                          ? const CircularProgressIndicator()
+                          ? const SizedBox(
+                              height: 16,
+                              width: 16,
+                              child: CircularProgressIndicator(strokeWidth: 3),
+                            )
                           : InkWell(
                               onTap: () => _tryUpdateProfile(() => Navigator.pop(context)),
                               child: const Text(

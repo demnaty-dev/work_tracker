@@ -7,11 +7,16 @@ import '../../profile/pages/edit_profile.dart';
 import '../../settings/services/dark_theme_provider.dart';
 import '../services/profile_service.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   static const routeName = '/profile';
 
   const Profile({Key? key}) : super(key: key);
 
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -49,7 +54,12 @@ class Profile extends StatelessWidget {
                     child: Container(
                       alignment: Alignment.centerRight,
                       child: InkWell(
-                        onTap: () => Navigator.pushNamed(context, EditProfile.routeName),
+                        onTap: () {
+                          Navigator.pushNamed(context, EditProfile.routeName).then((value) {
+                            setState(() {});
+                            return;
+                          });
+                        },
                         child: const Text(
                           'Edit',
                           style: TextStyle(
