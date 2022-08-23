@@ -187,37 +187,48 @@ class _EditProfileState extends State<EditProfile> {
             SizedBox(
               height: 63,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: const Text(
-                      'cancel',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w600,
-                        color: Colors.red,
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: const Text(
+                          'cancel',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w600,
+                            color: Colors.red,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                  Text(
-                    'Edit Profile',
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.headline6,
+                  Expanded(
+                    child: Text(
+                      'Edit Profile',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.headline6,
+                    ),
                   ),
-                  _isLoading
-                      ? const CircularProgressIndicator()
-                      : InkWell(
-                          onTap: () => _tryUpdateProfile(() => Navigator.pop(context)),
-                          child: const Text(
-                            'save',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600,
-                              color: primaryColor,
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      child: _isLoading
+                          ? const CircularProgressIndicator()
+                          : InkWell(
+                              onTap: () => _tryUpdateProfile(() => Navigator.pop(context)),
+                              child: const Text(
+                                'save',
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w600,
+                                  color: primaryColor,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
+                    ),
+                  )
                 ],
               ),
             ),

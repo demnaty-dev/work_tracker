@@ -25,28 +25,39 @@ class Profile extends StatelessWidget {
             SizedBox(
               height: 63,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: Icon(
-                      Icons.chevron_left,
-                      color: context.read<DarkThemeProvider>().darkTheme ? textColorDarkTheme : textColorLightTheme,
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.centerLeft,
+                      child: IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: Icon(
+                          Icons.chevron_left,
+                          color: context.read<DarkThemeProvider>().darkTheme ? textColorDarkTheme : textColorLightTheme,
+                        ),
+                      ),
                     ),
                   ),
-                  Text(
-                    'Profile',
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.headline6,
+                  Expanded(
+                    child: Text(
+                      'Profile',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.headline6,
+                    ),
                   ),
-                  InkWell(
-                    onTap: () => Navigator.pushNamed(context, EditProfile.routeName),
-                    child: const Text(
-                      'Edit',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w600,
-                        color: primaryColor,
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      child: InkWell(
+                        onTap: () => Navigator.pushNamed(context, EditProfile.routeName),
+                        child: const Text(
+                          'Edit',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w600,
+                            color: primaryColor,
+                          ),
+                        ),
                       ),
                     ),
                   ),
