@@ -85,7 +85,7 @@ class _LogInState extends State<LogIn> {
                       SizedBox(
                         width: 249,
                         child: Text(
-                          'Please Inter your email address and password for Login',
+                          'Please Enter your email address and password for Login',
                           style: Theme.of(context).textTheme.bodyText1,
                         ),
                       ),
