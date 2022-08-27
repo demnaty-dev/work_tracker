@@ -25,6 +25,7 @@ dependencies:
   shared_preferences: ^2.0.15
   image_picker: ^0.8.5+3
   permission_handler: ^10.0.0
+  syncfusion_flutter_pdfviewer: ^20.2.45-beta
 
 flutter_icons:
   android: true
