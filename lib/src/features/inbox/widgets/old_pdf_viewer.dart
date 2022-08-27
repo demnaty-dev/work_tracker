@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:work_tracker/src/features/inbox/services/inbox_services.dart';
+import 'package:work_tracker/src/features/pdf_viewer/models/document_model.dart';
+import 'package:work_tracker/src/features/pdf_viewer/pages/pdf_viewer.dart';
 import 'package:work_tracker/src/services/storage_services.dart';
 
 class OldPdfViewer extends StatefulWidget {
@@ -54,15 +56,13 @@ class _OldPdfViewerState extends State<OldPdfViewer> {
   void _openPDF() {
     final path = context.read<StorageServices?>()!.getPathTo(StorageServices.documents, _fileName);
 
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) {
-    //       final title = widget.fileName.substring(0, widget.fileName.lastIndexOf('.'));
-    //       return PDFViewerPage(title: title, file: File(path));
-    //     },
-    //   ),
-    // );
+    final title = widget.fileName.substring(0, widget.fileName.lastIndexOf('.'));
+
+    Navigator.pushNamed(
+      context,
+      PDFViewer.routeName,
+      arguments: DocumentModel(title, path),
+    );
   }
 
   Future<void> _downloadPDF(Future<DownloadTask> Function() getDownloadTask) async {
