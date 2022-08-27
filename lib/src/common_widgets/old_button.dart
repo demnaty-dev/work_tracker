@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:work_tracker/src/constants/theme.dart';
+
+import '../constants/theme.dart';
 
 class OldButton extends StatelessWidget {
   final String child;

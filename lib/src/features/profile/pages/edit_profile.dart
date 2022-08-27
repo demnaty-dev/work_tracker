@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../profile/services/profile_service.dart';
-import '../../Authentication/models/user_model.dart';
 import '../../../common_widgets/old_text_field.dart';
 import '../../../constants/palette.dart';
+import '../../profile/services/profile_service.dart';
+import '../../Authentication/models/user_model.dart';
 
 class EditProfile extends StatefulWidget {
   static const routeName = '/edit-profile';

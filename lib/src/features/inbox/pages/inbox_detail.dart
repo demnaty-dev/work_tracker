@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:work_tracker/src/constants/palette.dart';
-import 'package:work_tracker/src/features/inbox/models/inbox_model.dart';
-import 'package:work_tracker/src/features/inbox/services/inbox_services.dart';
-import 'package:work_tracker/src/features/inbox/widgets/old_pdf_viewer.dart';
-import 'package:work_tracker/src/features/settings/services/dark_theme_provider.dart';
+import '../../../constants/palette.dart';
+import '../../settings/services/dark_theme_provider.dart';
+import '../models/inbox_model.dart';
+import '../services/inbox_services.dart';
+import '../widgets/old_pdf_viewer.dart';
 
 class InboxDetail extends StatefulWidget {
   static const routeName = '/inbox_detail';

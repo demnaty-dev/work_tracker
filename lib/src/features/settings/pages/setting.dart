@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:work_tracker/src/constants/palette.dart';
-import 'package:work_tracker/src/features/Authentication/services/authentication_services.dart';
-import 'package:work_tracker/src/features/profile/pages/profile.dart';
-import 'package:work_tracker/src/features/settings/services/dark_theme_provider.dart';
+
+import '../../../constants/palette.dart';
+import '../../Authentication/services/authentication_services.dart';
+import '../../profile/pages/profile.dart';
+import '../services/dark_theme_provider.dart';
 
 class Setting extends StatelessWidget {
   const Setting({Key? key}) : super(key: key);

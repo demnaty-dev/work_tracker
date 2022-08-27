@@ -2,10 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:work_tracker/src/features/inbox/models/inbox_model.dart';
-import 'package:work_tracker/src/features/inbox/pages/inbox_detail.dart';
-import 'package:work_tracker/src/features/inbox/services/inbox_services.dart';
-import 'package:work_tracker/src/features/inbox/widgets/old_list_tile.dart';
+
+import '../models/inbox_model.dart';
+import '../services/inbox_services.dart';
+import '../widgets/old_list_tile.dart';
+import 'inbox_detail.dart';
 
 class Inbox extends StatefulWidget {
   const Inbox({Key? key}) : super(key: key);

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:work_tracker/src/features/Authentication/pages/forgot_password.dart';
-import 'package:work_tracker/src/features/inbox/pages/inbox_detail.dart';
-import 'package:work_tracker/src/features/pdf_viewer/pages/pdf_viewer.dart';
-import 'package:work_tracker/src/features/profile/pages/edit_profile.dart';
-import 'package:work_tracker/src/features/profile/pages/profile.dart';
+
+import 'features/Authentication/pages/forgot_password.dart';
+import 'features/inbox/pages/inbox_detail.dart';
+import 'features/pdf_viewer/pages/pdf_viewer.dart';
+import 'features/profile/pages/edit_profile.dart';
+import 'features/profile/pages/profile.dart';
 
 import 'features/Authentication/pages/log_in.dart';
 import 'features/settings/services/dark_theme_provider.dart';

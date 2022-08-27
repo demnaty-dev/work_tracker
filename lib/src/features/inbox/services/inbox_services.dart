@@ -1,11 +1,11 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' show User;
 import 'package:firebase_storage/firebase_storage.dart';
 
-import 'package:flutter/foundation.dart';
-import 'package:work_tracker/src/features/inbox/models/inbox_model.dart';
+import '../models/inbox_model.dart';
 
 class InboxServices {
   final CollectionReference _inboxes;

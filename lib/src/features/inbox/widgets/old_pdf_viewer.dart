@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:work_tracker/src/features/inbox/services/inbox_services.dart';
-import 'package:work_tracker/src/features/pdf_viewer/models/document_model.dart';
-import 'package:work_tracker/src/features/pdf_viewer/pages/pdf_viewer.dart';
-import 'package:work_tracker/src/services/storage_services.dart';
+
+import '../../../services/storage_services.dart';
+import '../../pdf_viewer/models/document_model.dart';
+import '../../pdf_viewer/pages/pdf_viewer.dart';
+import '../services/inbox_services.dart';
 
 class OldPdfViewer extends StatefulWidget {
   final String url;
