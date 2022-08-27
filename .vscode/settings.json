@@ -19,6 +19,7 @@
   "dart.lineLength": 160,
   "dart.previewFlutterUiGuides": true,
   "cSpell.words": [
-    "ARGB"
+    "ARGB",
+    "pdfview"
   ]
 }

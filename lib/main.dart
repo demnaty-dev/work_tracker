@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:work_tracker/src/services/storage_services.dart';
 
 import 'firebase_options.dart';
 import 'src/app.dart';
@@ -39,6 +40,14 @@ void main() async {
             final user = context.read<AuthenticationServices>().currentUser();
             if (user == null) return null;
             return InboxServices(user);
+          },
+        ),
+        ProxyProvider<bool, StorageServices?>(
+          update: (context, value, _) {
+            if (value) {
+              return StorageServices();
+            }
+            return null;
           },
         ),
       ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:work_tracker/src/constants/palette.dart';
 import 'package:work_tracker/src/features/inbox/models/inbox_model.dart';
 import 'package:work_tracker/src/features/inbox/services/inbox_services.dart';
@@ -71,20 +72,19 @@ class _InboxDetailState extends State<InboxDetail> {
     );
   }
 
-  Widget _buildFileViewer(List<String> urlsOffline, List<String> urlsOnline) {
+  Widget _buildFileViewer() {
     return Expanded(
       child: ListView.builder(
-        itemBuilder: (context, index) {
+        itemBuilder: (_, index) {
+          final url = im.urls!.elementAt(index);
+          final fileName = url.substring(url.lastIndexOf('/') + 1);
           return OldPdfViewer(
-            urlOffline: urlsOffline.elementAt(index),
-            urlOnline: urlsOnline.elementAt(index),
-            metadata: {
-              'id': im.id,
-              'index': index,
-            },
+            url: im.urls!.elementAt(index),
+            id: im.id,
+            fileName: fileName,
           );
         },
-        itemCount: urlsOffline.length,
+        itemCount: im.urls!.length,
       ),
     );
   }
@@ -133,7 +133,7 @@ class _InboxDetailState extends State<InboxDetail> {
             const SizedBox(height: 16),
             _buildContent(theme.textTheme, im.content),
             const SizedBox(height: 24),
-            if (im.urlsOnline != null) _buildFileViewer(im.urlsOffline!, im.urlsOnline!),
+            if (im.urls != null) _buildFileViewer(),
           ],
         ),
       ),

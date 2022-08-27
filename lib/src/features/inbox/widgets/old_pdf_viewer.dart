@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:work_tracker/src/features/inbox/services/inbox_services.dart';
+import 'package:work_tracker/src/services/storage_services.dart';
 
 class OldPdfViewer extends StatefulWidget {
-  final String urlOffline;
-  final String urlOnline;
-  final Map<String, dynamic> metadata;
+  final String url;
+  final String id;
+  final String fileName;
 
   const OldPdfViewer({
     Key? key,
-    required this.urlOffline,
-    required this.urlOnline,
-    required this.metadata,
+    required this.url,
+    required this.id,
+    required this.fileName,
   }) : super(key: key);
 
   @override
@@ -17,92 +22,186 @@ class OldPdfViewer extends StatefulWidget {
 }
 
 class _OldPdfViewerState extends State<OldPdfViewer> {
-  late final bool _isAvailable;
+  late String _fileName;
+  late String _customName;
+
+  bool _checkingFileExists = true;
+  bool _isAvailable = false;
+  bool _isLoading = false;
+
+  late DownloadTask _downloadTask;
+  bool _isDownloading = false;
+  double _progress = 0.0;
 
   @override
   void initState() {
-    if (widget.urlOffline.compareTo('none') == 0) {
-      _isAvailable = false;
+    _fileName = widget.id + widget.fileName;
+
+    _customName = widget.fileName;
+    if (_customName.length > 20) {
+      _customName = '${_customName.substring(0, 13)}...${_customName.substring(_customName.length - 7)}';
     }
+
+    context.read<StorageServices?>()!.fileExists(StorageServices.documents, _fileName).then((value) {
+      _isAvailable = value;
+      setState(() => _checkingFileExists = false);
+      return;
+    });
+
     super.initState();
   }
 
-  void _openPDF() {}
+  void _openPDF() {
+    final path = context.read<StorageServices?>()!.getPathTo(StorageServices.documents, _fileName);
 
-  void _downloadPDF() {}
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) {
+    //       final title = widget.fileName.substring(0, widget.fileName.lastIndexOf('.'));
+    //       return PDFViewerPage(title: title, file: File(path));
+    //     },
+    //   ),
+    // );
+  }
+
+  Future<void> _downloadPDF(Future<DownloadTask> Function() getDownloadTask) async {
+    await context.read<StorageServices?>()!.initDirectories();
+    setState(() => _isLoading = true);
+    _downloadTask = await getDownloadTask();
+    _isDownloading = true;
+    _downloadTask.snapshotEvents.listen((taskSnapshot) {
+      switch (taskSnapshot.state) {
+        case TaskState.running:
+          if (taskSnapshot.totalBytes != -1) {
+            if (_isLoading) {
+              _isLoading = false;
+            }
+            setState(() => _progress = taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
+          }
+
+          break;
+        case TaskState.paused:
+          // TODO: Handle this case.
+          break;
+        case TaskState.success:
+          _isLoading = false;
+          _isDownloading = false;
+          setState(() => _isAvailable = true);
+          break;
+        case TaskState.canceled:
+          setState(() => _isDownloading = false);
+          break;
+        case TaskState.error:
+          // TODO: Handle this case.
+          break;
+      }
+    });
+  }
+
+  Widget _buildIsNotAvailable() {
+    if (!_isLoading && !_isDownloading) {
+      return IconButton(
+        onPressed: () {
+          _downloadPDF(
+            () {
+              final path = context.read<StorageServices?>()!.getPathTo(
+                    StorageServices.documents,
+                    _fileName,
+                  );
+
+              return context.read<InboxServices?>()!.downloadFile(widget.url, path);
+            },
+          );
+        },
+        icon: const Icon(Icons.download),
+      );
+    }
+    if (_isLoading) {
+      return const SizedBox(
+        height: 48,
+        width: 48,
+        child: Center(
+          child: SizedBox(
+            width: 32,
+            height: 32,
+            child: CircularProgressIndicator(
+              strokeWidth: 3.5,
+            ),
+          ),
+        ),
+      );
+    }
+    if (_isDownloading) {
+      return SizedBox(
+        height: 48,
+        width: 48,
+        child: Center(
+          child: SizedBox(
+            width: 32,
+            height: 32,
+            child: CircularProgressIndicator(
+              strokeWidth: 3.5,
+              value: _progress,
+            ),
+          ),
+        ),
+      );
+    }
+    return const Text('Unhandled');
+  }
+
+  Widget _buildIsAvailable() {
+    return IconButton(
+      onPressed: _openPDF,
+      icon: const Icon(Icons.open_in_new),
+    );
+  }
+
+  Widget _buildCheckingFileExists() {
+    return const SizedBox(
+      height: 48,
+      width: 48,
+      child: Center(
+        child: SizedBox(
+          width: 32,
+          height: 32,
+          child: CircularProgressIndicator(
+            strokeWidth: 3.5,
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    const round = 2.0;
+    //final theme = Theme.of(context);
+    const round = 16.0;
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(round),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(round)),
       ),
-      elevation: 2,
-      margin: const EdgeInsets.all(8),
-      child: AspectRatio(
-        aspectRatio: 16 / 9,
-        child: Stack(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(round)),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
+            Row(
+              children: [
+                Icon(
+                  Icons.picture_as_pdf,
+                  color: Colors.red.shade400,
                 ),
-              ),
+                const SizedBox(width: 8),
+                Text(_customName),
+              ],
             ),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(round),
-                  bottomRight: Radius.circular(round),
-                ),
-                child: Container(
-                  padding: const EdgeInsets.all(16.0),
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [
-                        Color.fromARGB(53, 0, 0, 0),
-                        Colors.transparent,
-                      ],
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.picture_as_pdf,
-                            color: Colors.red.shade400,
-                          ),
-                          const SizedBox(width: 8),
-                          const Text(
-                            'Text',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                      const Icon(Icons.download),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: _isAvailable ? _openPDF : _downloadPDF,
-                borderRadius: BorderRadius.circular(round),
-              ),
-            )
+            _checkingFileExists
+                ? _buildCheckingFileExists()
+                : _isAvailable
+                    ? _buildIsAvailable()
+                    : _buildIsNotAvailable(),
           ],
         ),
       ),

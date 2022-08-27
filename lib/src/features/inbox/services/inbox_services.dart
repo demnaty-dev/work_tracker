@@ -1,15 +1,21 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' show User;
+import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:work_tracker/src/features/inbox/models/inbox_model.dart';
 
 class InboxServices {
   final CollectionReference _inboxes;
+  final FirebaseStorage _storage;
   // ignore: unused_field
   final User _user;
 
-  InboxServices(this._user) : _inboxes = FirebaseFirestore.instance.collection('users/${_user.uid}/inboxes') {
+  InboxServices(this._user)
+      : _inboxes = FirebaseFirestore.instance.collection('users/${_user.uid}/inboxes'),
+        _storage = FirebaseStorage.instance {
     FirebaseFirestore.instance.settings = const Settings(
       persistenceEnabled: true,
       cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
@@ -68,5 +74,12 @@ class InboxServices {
     } catch (err) {
       debugPrint(err.toString());
     }
+  }
+
+  Future<DownloadTask> downloadFile(String url, String filePath) async {
+    final gsReference = _storage.refFromURL(url);
+    final file = File(filePath);
+
+    return gsReference.writeToFile(file);
   }
 }

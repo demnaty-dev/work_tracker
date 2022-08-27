@@ -7,8 +7,7 @@ class InboxModel {
   final String content;
   final bool isSeen;
   final bool isFavorite;
-  final List<String>? urlsOnline;
-  final List<String>? urlsOffline;
+  final List<String>? urls;
 
   const InboxModel({
     required this.id,
@@ -17,8 +16,7 @@ class InboxModel {
     required this.content,
     required this.isSeen,
     required this.isFavorite,
-    this.urlsOnline,
-    this.urlsOffline,
+    this.urls,
   });
 
   InboxModel.fromJson({required this.id, required Map<String, dynamic> json})
@@ -27,8 +25,7 @@ class InboxModel {
         content = json['content'],
         isSeen = json['isSeen'],
         isFavorite = json['isFavorite'],
-        urlsOnline = json['urls_online'] != null ? List<String>.from(json['urls_online']) : null,
-        urlsOffline = json['urls_offline'] != null ? List<String>.from(json['urls_offline']) : null;
+        urls = json['urls'] != null ? List<String>.from(json['urls']) : null;
 
   Map<String, dynamic> toJson() => {
         'date': date.toIso8601String(),
