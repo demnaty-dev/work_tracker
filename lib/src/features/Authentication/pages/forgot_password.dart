@@ -93,7 +93,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               ),
               const SizedBox(height: 30),
               _isLoading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const SizedBox(
+                      height: 48,
+                      child: Center(
+                        child: SizedBox(
+                          height: 32,
+                          width: 32,
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    )
                   : OldButton(
                       child: 'Reset Password',
                       onPressed: () => _trySubmit(() => Navigator.pop(context)),

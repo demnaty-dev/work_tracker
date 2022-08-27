@@ -130,7 +130,16 @@ class _LogInState extends State<LogIn> {
                       ),
                       const SizedBox(height: 15),
                       _isLoading
-                          ? const Center(child: CircularProgressIndicator())
+                          ? const SizedBox(
+                              height: 48,
+                              child: Center(
+                                child: SizedBox(
+                                  height: 32,
+                                  width: 32,
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ),
+                            )
                           : OldButton(
                               child: 'Sign In',
                               onPressed: _trySubmit,

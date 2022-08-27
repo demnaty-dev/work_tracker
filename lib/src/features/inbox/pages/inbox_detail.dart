@@ -41,10 +41,16 @@ class _InboxDetailState extends State<InboxDetail> {
         ),
         _isLoading
             ? const SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.0,
+                width: 48,
+                height: 48,
+                child: Center(
+                  child: SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.0,
+                    ),
+                  ),
                 ),
               )
             : IconButton(
@@ -59,7 +65,10 @@ class _InboxDetailState extends State<InboxDetail> {
                   });
                   setState(() => _isLoading = true);
                 },
-                icon: Icon(_isFavorite ? Icons.star : Icons.star_border),
+                icon: Icon(
+                  _isFavorite ? Icons.star : Icons.star_border,
+                  color: Colors.amber,
+                ),
               ),
       ],
     );
