@@ -27,10 +27,11 @@ dependencies:
   permission_handler: ^10.0.0
   syncfusion_flutter_pdfviewer: ^20.2.45-beta
 
+# flutter pub run flutter_launcher_icons:main
 flutter_icons:
   android: true
   ios: false
-  image_path: "assets/icon/icon.png"
+  image_path: "assets/images/app_icon.png"
   min_sdk_android: 19 # android min sdk min:16, default
   web:
     generate: false
@@ -45,7 +46,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/icon/
     - assets/images/
   fonts:
     - family: poppins
