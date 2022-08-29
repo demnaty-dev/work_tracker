@@ -26,6 +26,7 @@ dependencies:
   image_picker: ^0.8.5+3
   permission_handler: ^10.0.0
   syncfusion_flutter_pdfviewer: ^20.2.45-beta
+  flutter_native_splash: ^2.2.8
 
 # flutter pub run flutter_launcher_icons:main
 flutter_icons:
@@ -37,6 +38,29 @@ flutter_icons:
     generate: false
   windows:
     generate: false
+
+# flutter pub run flutter_native_splash:create
+flutter_native_splash:
+  color: "#ffffff"
+  #background_image: "assets/background.png"
+  image: assets/images/splash.png
+  branding: assets/images/branding.png
+  branding_mode: bottom
+  #color_dark: "#042a49"
+  #background_image_dark: "assets/dark-background.png"
+  #image_dark: assets/splash-invert.png
+  #branding_dark: assets/dart_dark.png
+  android_12:
+    image: assets/images/splash.png
+    color: "#ffffff"
+    icon_background_color: "#ffffff"
+    branding: assets/images/branding.png
+    #image_dark: assets/android12splash-invert.png
+    #color_dark: "#042a49"
+    #icon_background_color_dark: "#eeeeee"
+  android: true
+  ios: false
+  web: false
 
 dev_dependencies:
   flutter_lints: ^2.0.0
