@@ -1,24 +1,45 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart' show User;
 import 'package:firebase_storage/firebase_storage.dart';
 
+import '../../../services/storage_services.dart';
 import '../../Authentication/models/user_model.dart';
 
 class ProfileService {
+  final User _user;
+  final StorageServices _storageService;
   final DatabaseReference _dataRef;
   final Reference _storageRef;
-  final User _user;
   UserModel? _userModel;
 
-  ProfileService(this._user)
+  ProfileService(this._user, this._storageService)
       : _storageRef = FirebaseStorage.instance.ref(),
         _dataRef = FirebaseDatabase.instance.ref();
 
-  UserModel? get userModel => _userModel;
+  FutureOr<UserModel> get userModel async {
+    if (_userModel != null) return _userModel!;
 
-  Future<UserModel?> userFromFirebase() async {
+    if (!(await _userFromLocalStoreDevice())) {
+      await _userFromFirebase();
+    }
+    return _userModel!;
+  }
+
+  Future<bool> _userFromLocalStoreDevice() async {
+    final userModel = await _storageService.getProfile(_user.uid);
+    if (userModel == null) return false;
+    _userModel = userModel;
+    return true;
+  }
+
+  Future<void> _storeUserOnLocalDevice() async {
+    await _storageService.saveProfile(_userModel!);
+  }
+
+  Future<void> _userFromFirebase() async {
     final snapshot = await _dataRef.child('users/${_user.uid}').get();
 
     if (snapshot.exists) {
@@ -32,7 +53,7 @@ class ProfileService {
       );
     }
 
-    return _userModel;
+    await _storeUserOnLocalDevice();
   }
 
   Future<void> updateUser(
@@ -55,6 +76,22 @@ class ProfileService {
       'imageUrl': imageUrl,
     };
 
+    _userModel = UserModel(
+      uid: _user.uid,
+      displayName: displayName,
+      email: userModel.email,
+      phone: phone,
+      photoUrl: imageUrl,
+    );
+
+    _storeUserOnLocalDevice();
+
     await _dataRef.child('users/${_user.uid}').update(userInfo);
+  }
+
+  // Does I need this one ??
+  // later i will know :)
+  Future<void> refreshUserFromFirebase() async {
+    await _userFromFirebase();
   }
 }

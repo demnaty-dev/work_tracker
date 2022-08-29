@@ -28,13 +28,6 @@ void main() async {
           create: (context) => context.read<AuthenticationServices>().onAuthStateChanged,
           initialData: false,
         ),
-        ProxyProvider<bool, ProfileService?>(
-          update: (context, value, __) {
-            final user = context.read<AuthenticationServices>().currentUser();
-            if (user == null) return null;
-            return ProfileService(user);
-          },
-        ),
         ProxyProvider<bool, InboxServices?>(
           update: (context, value, __) {
             final user = context.read<AuthenticationServices>().currentUser();
@@ -48,6 +41,14 @@ void main() async {
               return StorageServices();
             }
             return null;
+          },
+        ),
+        ProxyProvider<StorageServices?, ProfileService?>(
+          update: (context, value, __) {
+            if (value == null) return null;
+            final user = context.read<AuthenticationServices>().currentUser()!;
+
+            return ProfileService(user, context.read<StorageServices?>()!);
           },
         ),
       ],

@@ -22,13 +22,16 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
-  late FutureOr<UserModel?> _userModel;
+  late FutureOr<UserModel> _userModel;
 
   File? _pickedImage;
   String? _displayName;
   String? _phone;
 
-  Future<void> _tryUpdateProfile(VoidCallback onSuccess) async {
+  Future<void> _tryUpdateProfile(
+    VoidCallback onSuccess,
+    Future<void> Function(UserModel) update,
+  ) async {
     if (_formKey.currentState == null) return;
 
     final isValid = _formKey.currentState!.validate();
@@ -38,15 +41,10 @@ class _EditProfileState extends State<EditProfile> {
       _formKey.currentState!.save();
 
       setState(() => _isLoading = true);
-      final user = _userModel as UserModel;
+      final user = await Future.value(_userModel);
       if (_pickedImage != null || _displayName != user.displayName || _phone != user.phone) {
         try {
-          await context.read<ProfileService?>()!.updateUser(
-                user,
-                _pickedImage,
-                _displayName!,
-                _phone!,
-              );
+          await update(user);
         } catch (err) {
           debugPrint('_________________________err_________________________');
         }
@@ -81,13 +79,76 @@ class _EditProfileState extends State<EditProfile> {
     });
   }
 
-  Widget _buildUI(UserModel? user) {
-    if (user == null) {
-      return const Center(
-        child: Text('empty'),
-      );
-    }
+  Widget _buildHeader(ThemeData theme) {
+    return SizedBox(
+      height: 63,
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              alignment: Alignment.centerLeft,
+              child: InkWell(
+                onTap: _isLoading ? null : () => Navigator.pop(context),
+                child: Text(
+                  'cancel',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
+                    color: _isLoading ? Colors.grey.shade300 : Colors.red,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              'Edit Profile',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.headline6,
+            ),
+          ),
+          Expanded(
+            child: _isLoading
+                ? Container(
+                    alignment: Alignment.centerRight,
+                    child: const SizedBox(
+                      height: 16,
+                      width: 16,
+                      child: CircularProgressIndicator(strokeWidth: 3),
+                    ),
+                  )
+                : InkWell(
+                    onTap: () => _tryUpdateProfile(
+                      () => Navigator.pop(context),
+                      (UserModel user) async {
+                        await context.read<ProfileService?>()!.updateUser(
+                              user,
+                              _pickedImage,
+                              _displayName!,
+                              _phone!,
+                            );
+                      },
+                    ),
+                    child: Container(
+                      height: 48,
+                      alignment: Alignment.centerRight,
+                      child: const Text(
+                        'save',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w600,
+                          color: primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+          )
+        ],
+      ),
+    );
+  }
 
+  Widget _buildUI(UserModel user) {
     ImageProvider image;
 
     if (_pickedImage != null) {
@@ -104,6 +165,7 @@ class _EditProfileState extends State<EditProfile> {
         children: [
           CircleAvatar(
             backgroundImage: image,
+            backgroundColor: Colors.transparent,
             radius: 70,
           ),
           Row(
@@ -157,89 +219,33 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Widget _buildFutureUI() {
-    return FutureBuilder<UserModel?>(
+    return FutureBuilder<UserModel>(
       builder: (_, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
         } else {
-          return _buildUI(snapshot.data);
+          return _buildUI(snapshot.data!);
         }
       },
-      future: _userModel as Future<UserModel?>,
+      future: _userModel as Future<UserModel>,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final profSer = context.read<ProfileService?>()!;
-    if (profSer.userModel == null) {
-      _userModel = profSer.userFromFirebase();
-    } else {
-      _userModel = profSer.userModel!;
-    }
+    _userModel = context.read<ProfileService?>()!.userModel;
 
     return Scaffold(
       body: SafeArea(
         minimum: const EdgeInsets.all(24),
         child: Column(
           children: [
-            SizedBox(
-              height: 63,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      child: InkWell(
-                        onTap: _isLoading ? null : () => Navigator.pop(context),
-                        child: Text(
-                          'cancel',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            color: _isLoading ? Colors.grey.shade300 : Colors.red,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      'Edit Profile',
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.headline6,
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.centerRight,
-                      child: _isLoading
-                          ? const SizedBox(
-                              height: 16,
-                              width: 16,
-                              child: CircularProgressIndicator(strokeWidth: 3),
-                            )
-                          : InkWell(
-                              onTap: () => _tryUpdateProfile(() => Navigator.pop(context)),
-                              child: const Text(
-                                'save',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w600,
-                                  color: primaryColor,
-                                ),
-                              ),
-                            ),
-                    ),
-                  )
-                ],
-              ),
-            ),
+            _buildHeader(theme),
             const SizedBox(height: 24),
             Expanded(
               child: SingleChildScrollView(
-                child: _userModel is Future ? _buildFutureUI() : _buildUI(_userModel as UserModel?),
+                child: _userModel is Future ? _buildFutureUI() : _buildUI(_userModel as UserModel),
               ),
             ),
           ],
