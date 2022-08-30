@@ -29,6 +29,12 @@ final lightTextTheme = oldLightTextTheme.copyWith(
     fontWeight: medium,
     color: textColorLightTheme,
   ),
+  headline3: oldLightTextTheme.headline6?.copyWith(
+    fontFamily: 'poppins',
+    fontSize: 14,
+    fontWeight: semiBold,
+    color: textColorLightTheme,
+  ),
   subtitle1: oldLightTextTheme.subtitle1?.copyWith(
     fontFamily: 'poppins',
     fontSize: 16,
@@ -81,6 +87,12 @@ final darkTextTheme = oldDarkTextTheme.copyWith(
     fontFamily: 'poppins',
     fontSize: 18,
     fontWeight: medium,
+    color: textColorDarkTheme,
+  ),
+  headline3: oldLightTextTheme.headline6?.copyWith(
+    fontFamily: 'poppins',
+    fontSize: 14,
+    fontWeight: semiBold,
     color: textColorDarkTheme,
   ),
   subtitle1: oldDarkTextTheme.subtitle1?.copyWith(
