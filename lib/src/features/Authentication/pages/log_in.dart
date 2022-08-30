@@ -74,7 +74,7 @@ class _LogInState extends State<LogIn> {
                 child: Form(
                   key: _formKey,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -144,6 +144,8 @@ class _LogInState extends State<LogIn> {
                               child: 'Sign In',
                               onPressed: _trySubmit,
                             ),
+                      const SizedBox(height: 60),
+                      const Image(image: AssetImage('assets/images/work_track.png')),
                     ],
                   ),
                 ),

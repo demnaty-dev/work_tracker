@@ -59,56 +59,64 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return Scaffold(
       body: SafeArea(
         minimum: const EdgeInsets.all(24),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 64),
-              Text(
-                'Forgot Password',
-                style: Theme.of(context).textTheme.headline5,
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: 249,
-                child: Text(
-                  'Enter your email account to reset your password',
-                  style: Theme.of(context).textTheme.bodyText1,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Expanded(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Forgot Password',
+                      style: Theme.of(context).textTheme.headline5,
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: 249,
+                      child: Text(
+                        'Enter your email account to reset your password',
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    OldTextField(
+                      placeholder: 'Enter your email',
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        final emailForm = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                        if (value != null && (value.isEmpty || !emailForm.hasMatch(value))) {
+                          return 'Please provide a valid email !';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) => _userEmail = value!,
+                    ),
+                    const SizedBox(height: 30),
+                    _isLoading
+                        ? const SizedBox(
+                            height: 48,
+                            child: Center(
+                              child: SizedBox(
+                                height: 32,
+                                width: 32,
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                          )
+                        : OldButton(
+                            child: 'Reset Password',
+                            onPressed: () => _trySubmit(() => Navigator.pop(context)),
+                          ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 40),
-              OldTextField(
-                placeholder: 'Enter your email',
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  final emailForm = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                  if (value != null && (value.isEmpty || !emailForm.hasMatch(value))) {
-                    return 'Please provide a valid email !';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _userEmail = value!,
-              ),
-              const SizedBox(height: 30),
-              _isLoading
-                  ? const SizedBox(
-                      height: 48,
-                      child: Center(
-                        child: SizedBox(
-                          height: 32,
-                          width: 32,
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                    )
-                  : OldButton(
-                      child: 'Reset Password',
-                      onPressed: () => _trySubmit(() => Navigator.pop(context)),
-                    ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 60),
+            const Image(image: AssetImage('assets/images/work_track.png')),
+          ],
         ),
       ),
     );

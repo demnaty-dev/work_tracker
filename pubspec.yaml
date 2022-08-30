@@ -81,3 +81,5 @@ flutter:
           weight: 600
         - asset: assets/fonts/poppins/Poppins-Bold.otf
           weight: 700
+        - asset: assets/fonts/poppins/Poppins-ExtraBold.otf
+          weight: 900

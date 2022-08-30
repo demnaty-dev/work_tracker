@@ -5,6 +5,7 @@ const regular = FontWeight.normal;
 const medium = FontWeight.w500;
 const semiBold = FontWeight.w600;
 const bold = FontWeight.w700;
+const extraBold = FontWeight.w900;
 
 // Light Text Theme
 
@@ -13,8 +14,8 @@ final lightTextTheme = oldLightTextTheme.copyWith(
   headline4: oldLightTextTheme.headline4?.copyWith(
     fontFamily: 'poppins',
     fontSize: 35,
-    fontWeight: regular,
-    color: textColorLightTheme,
+    fontWeight: extraBold,
+    color: primaryColor,
   ),
   headline5: oldLightTextTheme.headline5?.copyWith(
     fontFamily: 'poppins',
