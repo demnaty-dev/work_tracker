@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:work_tracker/src/pages/loading_page.dart';
 
 import 'features/Authentication/pages/forgot_password.dart';
 import 'features/inbox/pages/inbox_detail.dart';
@@ -27,12 +28,22 @@ class MyApp extends StatelessWidget {
       home: Consumer<bool>(
         builder: (_, userExist, __) {
           if (userExist) {
-            return const Home();
+            return const LoadingPage();
           }
           return const LogIn();
         },
       ),
       routes: {
+        Home.routeName: (_) {
+          return Consumer<bool>(
+            builder: (_, userExist, __) {
+              if (userExist) {
+                return const Home();
+              }
+              return const LogIn();
+            },
+          );
+        },
         ForgotPassword.routeName: (_) => const ForgotPassword(),
         Profile.routeName: (_) => const Profile(),
         EditProfile.routeName: (_) => const EditProfile(),

@@ -6,6 +6,7 @@ class AuthenticationServices {
   AuthenticationServices() : _firebaseAuth = FirebaseAuth.instance;
 
   Stream<bool> get onAuthStateChanged {
+    print('***************@@@@@@@@@@@@@@@@@');
     return _firebaseAuth.authStateChanges().map((user) => user != null);
   }
 
@@ -13,8 +14,13 @@ class AuthenticationServices {
     return _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
   }
 
-  Future<void> signOut() {
-    return _firebaseAuth.signOut();
+  Future<void> signOut() async {
+    try {
+      print('777777777777777777777777');
+      await _firebaseAuth.signOut();
+    } catch (error) {
+      print(error.toString());
+    }
   }
 
   User? currentUser() {
