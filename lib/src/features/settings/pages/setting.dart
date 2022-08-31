@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:work_tracker/src/services/storage_services.dart';
 
 import '../../../constants/palette.dart';
 import '../../Authentication/services/authentication_services.dart';
@@ -98,7 +99,13 @@ class Setting extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 TextButton.icon(
-                  onPressed: () => context.read<AuthenticationServices>().signOut(),
+                  onPressed: () async {
+                    await context.read<StorageServices?>()!.deleteFiles().then(
+                      (value) {
+                        return context.read<AuthenticationServices>().signOut();
+                      },
+                    );
+                  },
                   icon: const Icon(Icons.logout),
                   label: const Text('Sign out'),
                 ),

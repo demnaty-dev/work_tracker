@@ -79,16 +79,20 @@ class StorageServices {
 
     final jsonPath = getPathTo(profilesData, '${user.uid}.json');
     final json = File(jsonPath);
-    final imagePath = getPathTo(profilesImages, '${user.uid}.png');
-    final image = File(imagePath);
 
-    final gsReference = _storage.refFromURL(user.photoUrl);
-    final downloadTask = gsReference.writeToFile(image);
+    String imagePath = user.photoUrl;
+    if (!user.photoUrl.contains('assets')) {
+      imagePath = getPathTo(profilesImages, '${user.uid}.png');
+      final image = File(imagePath);
 
-    await downloadTask.whenComplete(() => null);
+      final gsReference = _storage.refFromURL(user.photoUrl);
+      final downloadTask = gsReference.writeToFile(image);
 
-    if (!json.existsSync()) {
-      json.createSync(recursive: true);
+      await downloadTask.whenComplete(() => null);
+
+      if (!json.existsSync()) {
+        json.createSync(recursive: true);
+      }
     }
 
     json.writeAsStringSync(user.toJson(imagePath));
@@ -104,5 +108,14 @@ class StorageServices {
     final jsonData = jsonFile.readAsStringSync();
     final user = UserModel.fromJson(uid: uid, json: json.decode(jsonData));
     return user;
+  }
+
+  Future<void> deleteFiles() async {
+    // ! Throw error if user not accepted
+
+    var path = Directory(await appDirectory);
+    if (await path.exists()) {
+      path.delete(recursive: true);
+    }
   }
 }
