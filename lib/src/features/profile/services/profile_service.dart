@@ -94,4 +94,42 @@ class ProfileService {
   Future<void> refreshUserFromFirebase() async {
     await _userFromFirebase();
   }
+
+  Future<UserModel?> _getFromFirebase(String uid) async {
+    final snapshot = await _dataRef.child('users/$uid').get();
+
+    if (snapshot.exists) {
+      Map<String, dynamic> userData = Map<String, dynamic>.from(snapshot.value as Map);
+      final userModel = UserModel(
+        uid: uid,
+        displayName: userData['Name'],
+        email: userData['Email'],
+        phone: userData['Phone'],
+        photoUrl: userData['imageUrl'],
+      );
+      await _storageService.saveProfile(userModel);
+      return userModel;
+    }
+
+    return null;
+  }
+
+  Future<UserModel?> getUserModel(String uid) async {
+    UserModel? userModel = await _storageService.getProfile(uid);
+    if (userModel == null) {
+      print("88888888888888885555555555@@@@@@@@@@ It's num");
+    }
+    userModel ??= await _getFromFirebase(uid);
+
+    return userModel;
+  }
+
+  Future<String?> getProfileImage(String uid) async {
+    final userModel = await getUserModel(uid);
+
+    if (userModel != null) {
+      return userModel.photoUrl;
+    }
+    return null;
+  }
 }

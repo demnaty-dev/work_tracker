@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:work_tracker/src/features/Authentication/models/user_model.dart';
 import 'package:work_tracker/src/features/profile/services/profile_service.dart';
+import 'package:work_tracker/src/features/projects/models/project_model.dart';
+import 'package:work_tracker/src/features/projects/pages/projects_list.dart';
+import 'package:work_tracker/src/features/projects/services/projects_services.dart';
+import 'package:work_tracker/src/features/projects/widgets/old_card_widget.dart';
 
 class Projects extends StatefulWidget {
   const Projects({Key? key}) : super(key: key);
@@ -15,9 +18,11 @@ class Projects extends StatefulWidget {
 
 class _ProjectsState extends State<Projects> {
   late final UserModel _userModel;
+  late final List<ProjectModel> _projectsModel;
   late final ImageProvider _imageProfile;
 
   bool _isLoadingUserData = true;
+  bool _isLoadingProjects = true;
 
   @override
   void initState() {
@@ -34,6 +39,11 @@ class _ProjectsState extends State<Projects> {
       }
 
       setState(() => _isLoadingUserData = false);
+    });
+
+    context.read<ProjectsServices?>()!.fetchProjectsFromCache(true, true, 2).then((value) {
+      _projectsModel = value ?? [];
+      setState(() => _isLoadingProjects = false);
     });
   }
 
@@ -103,152 +113,26 @@ class _ProjectsState extends State<Projects> {
     );
   }
 
-  Widget _buildAvatar() {
-    return CircleAvatar(
-      radius: 16,
-      backgroundColor: Colors.white,
-      child: CircleAvatar(
-        radius: 14,
-        backgroundColor: Colors.transparent,
-        child: Image.asset('assets/images/user.png'),
-      ),
-    );
-  }
-
-  Widget _buildCrewAvatars(ThemeData theme) {
-    return SizedBox(
-      width: 80,
-      child: Stack(
-        children: [
-          _buildAvatar(),
-          Positioned(
-            left: 20,
-            child: _buildAvatar(),
-          ),
-          Positioned(
-            left: 40,
-            child: _buildAvatar(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProgressSlide(ThemeData theme) {
-    return SizedBox(
-      width: 120,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text('Progress'),
-              Text('3/6'),
-            ],
-          ),
-          Stack(
-            children: [
-              Container(
-                height: 6,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.secondary,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(8),
-                  ),
-                ),
-              ),
-              Container(
-                height: 6,
-                width: 3 / 6 * 100,
-                decoration: BoxDecoration(
-                  color: theme.primaryColor,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(8),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildProjectsList(ThemeData theme) {
     return SizedBox(
       width: double.infinity,
       height: 160,
       //padding: const EdgeInsets.symmetric(vertical: 8),
-      child: ListView.separated(
-        itemBuilder: (context, index) {
-          return SizedBox(
-            width: 260,
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.0),
-              ),
-              elevation: 1.5,
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Image(
-                          image: AssetImage('assets/images/google.png'),
-                          height: 40,
-                          width: 40,
-                        ),
-                        SizedBox(
-                          width: 32,
-                          height: 32,
-                          child: IconButton(
-                            splashRadius: 26,
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              //setState(() => _isFavorite = true);
-                            },
-                            icon: Icon(
-                              Icons.star_border,
-                              color: Colors.grey.shade400,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'Create system solar',
-                      style: theme.textTheme.headline3,
-                    ),
-                    Text(DateFormat.yMMMMEEEEd().format(DateTime.now())),
-                    Expanded(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _buildCrewAvatars(theme),
-                          _buildProgressSlide(theme),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+      child: _isLoadingProjects
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : ListView.separated(
+              itemBuilder: (context, index) {
+                return OldCardWidget(project: _projectsModel.elementAt(index));
+              },
+              separatorBuilder: (context, index) {
+                return const SizedBox(width: 20);
+              },
+              itemCount: _projectsModel.length,
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 22),
             ),
-          );
-        },
-        separatorBuilder: (context, index) {
-          return const SizedBox(width: 20);
-        },
-        itemCount: 5,
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 22),
-      ),
     );
   }
 
@@ -267,7 +151,9 @@ class _ProjectsState extends State<Projects> {
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, ProjectsList.routeName);
+                },
                 child: Text(
                   'Show All',
                   style: theme.textTheme.subtitle2!.copyWith(

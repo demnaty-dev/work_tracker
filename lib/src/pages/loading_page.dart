@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:work_tracker/src/features/inbox/services/inbox_services.dart';
 import 'package:work_tracker/src/features/profile/services/profile_service.dart';
+import 'package:work_tracker/src/features/projects/services/projects_services.dart';
 import 'package:work_tracker/src/pages/home.dart';
 
 class LoadingPage extends StatefulWidget {
@@ -22,6 +23,10 @@ class _LoadingPageState extends State<LoadingPage> {
     await context.read<InboxServices?>()!.fetchInboxesFromCache(false);
   }
 
+  Future<void> _initUserProjects() async {
+    await context.read<ProjectsServices?>()!.fetchProjectsFromCache(false, false, 0);
+  }
+
   void _loadHomePage() {
     Navigator.pushReplacementNamed(context, Home.routeName);
   }
@@ -31,6 +36,8 @@ class _LoadingPageState extends State<LoadingPage> {
     await _initUserProfile();
     setState(() => _whatGoingOn = 'loading inboxes data');
     await _initUserInboxes();
+    setState(() => _whatGoingOn = 'loading projects data');
+    await _initUserProjects();
 
     setState(() => _whatGoingOn = 'Done');
     await Future.delayed(const Duration(seconds: 1));

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:work_tracker/src/features/projects/pages/projects_list.dart';
 import 'package:work_tracker/src/pages/loading_page.dart';
 
 import 'features/Authentication/pages/forgot_password.dart';
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
         EditProfile.routeName: (_) => const EditProfile(),
         InboxDetail.routeName: (_) => const InboxDetail(),
         PDFViewer.routeName: (_) => const PDFViewer(),
+        ProjectsList.routeName: (_) => const ProjectsList(),
       },
     );
   }

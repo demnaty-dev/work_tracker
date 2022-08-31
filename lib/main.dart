@@ -6,6 +6,7 @@ import 'firebase_options.dart';
 import 'src/features/Authentication/services/authentication_services.dart';
 import 'src/features/settings/services/dark_theme_provider.dart';
 import 'src/features/profile/services/profile_service.dart';
+import 'src/features/projects/services/projects_services.dart';
 import 'src/features/inbox/services/inbox_services.dart';
 import 'src/services/storage_services.dart';
 import 'src/app.dart';
@@ -41,6 +42,13 @@ void main() async {
               return StorageServices();
             }
             return null;
+          },
+        ),
+        ProxyProvider<bool, ProjectsServices?>(
+          update: (context, value, __) {
+            final user = context.read<AuthenticationServices>().currentUser();
+            if (user == null) return null;
+            return ProjectsServices(user);
           },
         ),
         ProxyProvider<StorageServices?, ProfileService?>(
