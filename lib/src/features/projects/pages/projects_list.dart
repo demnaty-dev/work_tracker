@@ -4,7 +4,7 @@ import 'package:work_tracker/src/constants/palette.dart';
 import 'package:work_tracker/src/features/projects/models/project_model.dart';
 import 'package:work_tracker/src/features/projects/services/projects_services.dart';
 import 'package:work_tracker/src/features/projects/widgets/old_card_widget.dart';
-import 'package:work_tracker/src/features/settings/services/dark_theme_provider.dart';
+import 'package:work_tracker/src/features/settings/services/theme_provider.dart';
 
 class ProjectsList extends StatefulWidget {
   static const routeName = '/projects-list';
@@ -92,6 +92,7 @@ class _ProjectsListState extends State<ProjectsList> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = context.read<ThemeProvider>().isDarkMode(context);
 
     return Scaffold(
       body: SafeArea(
@@ -111,7 +112,7 @@ class _ProjectsListState extends State<ProjectsList> {
                         onPressed: () => Navigator.pop(context),
                         icon: Icon(
                           Icons.chevron_left,
-                          color: context.read<DarkThemeProvider>().darkTheme ? textColorDarkTheme : textColorLightTheme,
+                          color: isDark ? textColorDarkTheme : textColorLightTheme,
                         ),
                       ),
                     ),

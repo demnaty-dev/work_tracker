@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:work_tracker/src/features/projects/pages/projects_list.dart';
+import 'package:work_tracker/src/features/settings/pages/theme_preference.dart';
 import 'package:work_tracker/src/pages/loading_page.dart';
 
 import 'features/Authentication/pages/forgot_password.dart';
@@ -10,7 +11,7 @@ import 'features/profile/pages/edit_profile.dart';
 import 'features/profile/pages/profile.dart';
 
 import 'features/Authentication/pages/log_in.dart';
-import 'features/settings/services/dark_theme_provider.dart';
+import 'features/settings/services/theme_provider.dart';
 import 'pages/home.dart';
 
 import 'constants/theme.dart';
@@ -20,12 +21,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeState = context.watch<ThemeProvider>().themeState;
+    ThemeMode theme;
+    if (themeState == ThemeProvider.systemTheme) {
+      theme = ThemeMode.system;
+    } else if (themeState == ThemeProvider.darkTheme) {
+      theme = ThemeMode.dark;
+    } else {
+      theme = ThemeMode.light;
+    }
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Work Tracker',
       theme: lightThemeData,
       darkTheme: darkThemeData,
-      themeMode: context.watch<DarkThemeProvider>().darkTheme ? ThemeMode.dark : ThemeMode.light,
+      themeMode: theme,
       home: Consumer<bool>(
         builder: (_, userExist, __) {
           if (userExist) {
@@ -45,6 +56,7 @@ class MyApp extends StatelessWidget {
             },
           );
         },
+        ThemePreference.routeName: (_) => const ThemePreference(),
         ForgotPassword.routeName: (_) => const ForgotPassword(),
         Profile.routeName: (_) => const Profile(),
         EditProfile.routeName: (_) => const EditProfile(),

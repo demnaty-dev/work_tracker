@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'firebase_options.dart';
 import 'src/features/Authentication/services/authentication_services.dart';
-import 'src/features/settings/services/dark_theme_provider.dart';
+import 'src/features/settings/services/theme_provider.dart';
 import 'src/features/profile/services/profile_service.dart';
 import 'src/features/projects/services/projects_services.dart';
 import 'src/features/inbox/services/inbox_services.dart';
@@ -17,13 +17,13 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  final DarkThemeProvider themeChangeProvider = DarkThemeProvider();
-  themeChangeProvider.darkTheme = await themeChangeProvider.darkThemePreference.getTheme();
+  final ThemeProvider themeProvider = ThemeProvider();
+  await themeProvider.initTheme();
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => themeChangeProvider),
+        ChangeNotifierProvider(create: (_) => themeProvider),
         Provider(create: (_) => AuthenticationServices()),
         StreamProvider<bool>(
           create: (context) => context.read<AuthenticationServices>().onAuthStateChanged,

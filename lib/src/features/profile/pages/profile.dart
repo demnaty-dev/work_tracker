@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:work_tracker/src/features/settings/services/theme_provider.dart';
 
 import '../../../constants/palette.dart';
 import '../../Authentication/models/user_model.dart';
 import '../../profile/pages/edit_profile.dart';
-import '../../settings/services/dark_theme_provider.dart';
 import '../services/profile_service.dart';
 
 class Profile extends StatefulWidget {
@@ -20,6 +20,7 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   Widget _buildHeader(ThemeData theme) {
+    final isDark = context.read<ThemeProvider>().isDarkMode(context);
     return SizedBox(
       height: 63,
       child: Row(
@@ -31,7 +32,7 @@ class _ProfileState extends State<Profile> {
                 onPressed: () => Navigator.pop(context),
                 icon: Icon(
                   Icons.chevron_left,
-                  color: context.read<DarkThemeProvider>().darkTheme ? textColorDarkTheme : textColorLightTheme,
+                  color: isDark ? textColorDarkTheme : textColorLightTheme,
                 ),
               ),
             ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../features/settings/services/dark_theme_provider.dart';
+import 'package:work_tracker/src/features/settings/services/theme_provider.dart';
+
 import '../constants/theme.dart';
 import '../constants/palette.dart';
 
@@ -25,6 +26,7 @@ class OldTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = context.read<ThemeProvider>().isDarkMode(context);
     return TextFormField(
       initialValue: text,
       keyboardType: keyboardType,
@@ -50,7 +52,7 @@ class OldTextField extends StatelessWidget {
         fontSize: 16,
         fontWeight: medium,
         fontFamily: 'Poppins',
-        color: context.read<DarkThemeProvider>().darkTheme ? textColorDarkTheme : textColorLightTheme,
+        color: isDark ? textColorDarkTheme : textColorLightTheme,
       ),
       onSaved: onSaved,
       validator: validator,

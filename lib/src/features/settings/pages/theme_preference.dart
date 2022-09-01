@@ -1,40 +1,46 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:provider/provider.dart';
 
+import 'package:work_tracker/src/constants/palette.dart';
 import 'package:work_tracker/src/features/settings/services/theme_provider.dart';
-import '../../../constants/palette.dart';
-import '../models/document_model.dart';
 
-class PDFViewer extends StatefulWidget {
-  static const routeName = '/pdf_viewer';
+enum ThemeState { light, dark, system }
 
-  const PDFViewer({Key? key}) : super(key: key);
+class ThemePreference extends StatefulWidget {
+  static const routeName = '/theme-preference';
+
+  const ThemePreference({Key? key}) : super(key: key);
 
   @override
-  State<PDFViewer> createState() => _PDFViewerState();
+  State<ThemePreference> createState() => _ThemePreferenceState();
 }
 
-class _PDFViewerState extends State<PDFViewer> {
-  late final DocumentModel _document;
+class _ThemePreferenceState extends State<ThemePreference> {
+  late ThemeState _themeState;
 
   @override
-  void didChangeDependencies() {
-    _document = ModalRoute.of(context)!.settings.arguments as DocumentModel;
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
+    final index = context.read<ThemeProvider>().themeState;
+    _themeState = ThemeState.values[index];
+  }
+
+  void _onChanged(ThemeState? val) {
+    context.read<ThemeProvider>().themeState = val!.index;
+    setState(() => _themeState = val);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     final isDark = context.read<ThemeProvider>().isDarkMode(context);
 
     return Scaffold(
       body: SafeArea(
-        minimum: const EdgeInsets.all(24),
+        minimum: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
               height: 63,
@@ -55,7 +61,7 @@ class _PDFViewerState extends State<PDFViewer> {
                   ),
                   Expanded(
                     child: Text(
-                      'PDF Viewer',
+                      'Theme',
                       textAlign: TextAlign.center,
                       style: theme.textTheme.headline6,
                     ),
@@ -66,8 +72,23 @@ class _PDFViewerState extends State<PDFViewer> {
                 ],
               ),
             ),
-            Expanded(
-              child: SfPdfViewer.file(File(_document.path)),
+            RadioListTile<ThemeState>(
+              title: const Text('Light'),
+              value: ThemeState.light,
+              groupValue: _themeState,
+              onChanged: _onChanged,
+            ),
+            RadioListTile<ThemeState>(
+              title: const Text('Dark'),
+              value: ThemeState.dark,
+              groupValue: _themeState,
+              onChanged: _onChanged,
+            ),
+            RadioListTile<ThemeState>(
+              title: const Text('System'),
+              value: ThemeState.system,
+              groupValue: _themeState,
+              onChanged: _onChanged,
             ),
           ],
         ),
