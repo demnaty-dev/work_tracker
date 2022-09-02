@@ -116,9 +116,6 @@ class ProfileService {
 
   Future<UserModel?> getUserModel(String uid) async {
     UserModel? userModel = await _storageService.getProfile(uid);
-    if (userModel == null) {
-      print("88888888888888885555555555@@@@@@@@@@ It's num");
-    }
     userModel ??= await _getFromFirebase(uid);
 
     return userModel;

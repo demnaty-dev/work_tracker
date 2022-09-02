@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:provider/provider.dart';
 
-import 'package:work_tracker/src/features/settings/services/theme_provider.dart';
+import '../../settings/services/theme_provider.dart';
 import '../../../constants/palette.dart';
 import '../models/document_model.dart';
 

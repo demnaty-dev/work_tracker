@@ -1,33 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:work_tracker/src/features/projects/pages/complaint.dart';
+import 'package:work_tracker/src/features/projects/services/projects_services.dart';
 
 import '../../../constants/palette.dart';
 import '../../settings/services/theme_provider.dart';
-import '../models/inbox_model.dart';
-import '../services/inbox_services.dart';
-import '../widgets/old_pdf_viewer.dart';
+import '../models/project_model.dart';
 
-class InboxDetail extends StatefulWidget {
-  static const routeName = '/inbox_detail';
+class ProjectDetail extends StatefulWidget {
+  static const routeName = "/project-detail";
 
-  const InboxDetail({Key? key}) : super(key: key);
+  const ProjectDetail({Key? key}) : super(key: key);
 
   @override
-  State<InboxDetail> createState() => _InboxDetailState();
+  State<ProjectDetail> createState() => _ProjectDetailState();
 }
 
-class _InboxDetailState extends State<InboxDetail> {
+class _ProjectDetailState extends State<ProjectDetail> {
   bool _isLoading = false;
   late bool _isFavorite;
-  late final InboxModel im;
+  late final ProjectModel project;
 
   @override
   void didChangeDependencies() {
-    im = ModalRoute.of(context)!.settings.arguments as InboxModel;
-    _isFavorite = im.isFavorite;
-    if (!im.isSeen) {
-      context.read<InboxServices?>()!.isSeen(im.id);
-    }
+    project = ModalRoute.of(context)!.settings.arguments as ProjectModel;
+    _isFavorite = project.isFavorite;
+
     super.didChangeDependencies();
   }
 
@@ -56,7 +55,7 @@ class _InboxDetailState extends State<InboxDetail> {
             : IconButton(
                 onPressed: () {
                   _isFavorite = !_isFavorite;
-                  context.read<InboxServices?>()!.isFavorite(id, _isFavorite).then((value) {
+                  context.read<ProjectsServices?>()!.isFavorite(id, _isFavorite).then((value) {
                     if (!value) {
                       _isFavorite = !_isFavorite;
                     }
@@ -67,7 +66,7 @@ class _InboxDetailState extends State<InboxDetail> {
                 },
                 icon: Icon(
                   _isFavorite ? Icons.star : Icons.star_border,
-                  color: Colors.amber,
+                  color: _isFavorite ? Colors.amber.shade400 : Colors.grey.shade400,
                 ),
               ),
       ],
@@ -81,23 +80,6 @@ class _InboxDetailState extends State<InboxDetail> {
     );
   }
 
-  Widget _buildFileViewer() {
-    return Expanded(
-      child: ListView.builder(
-        itemBuilder: (_, index) {
-          final url = im.urls!.elementAt(index);
-          final fileName = url.substring(url.lastIndexOf('/') + 1);
-          return OldPdfViewer(
-            url: im.urls!.elementAt(index),
-            id: im.id,
-            fileName: fileName,
-          );
-        },
-        itemCount: im.urls!.length,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -105,7 +87,7 @@ class _InboxDetailState extends State<InboxDetail> {
 
     return Scaffold(
       body: SafeArea(
-        minimum: const EdgeInsets.all(24),
+        minimum: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           children: [
             SizedBox(
@@ -127,7 +109,7 @@ class _InboxDetailState extends State<InboxDetail> {
                   ),
                   Expanded(
                     child: Text(
-                      'Inbox',
+                      'Project',
                       textAlign: TextAlign.center,
                       style: theme.textTheme.headline6,
                     ),
@@ -139,11 +121,20 @@ class _InboxDetailState extends State<InboxDetail> {
               ),
             ),
             const SizedBox(height: 24),
-            _buildTitle(theme.textTheme, im.id, im.subject),
-            const SizedBox(height: 16),
-            _buildContent(theme.textTheme, im.content),
+            _buildTitle(theme.textTheme, project.id, project.title),
+            Container(
+              alignment: Alignment.centerLeft,
+              child: Text(DateFormat.yMMMMEEEEd().format(project.date)),
+            ),
             const SizedBox(height: 24),
-            if (im.urls != null) _buildFileViewer(),
+            _buildContent(theme.textTheme, project.description),
+            const SizedBox(height: 60),
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, Complaint.routeName, arguments: project);
+              },
+              child: const Text('Create a new complaint'),
+            ),
           ],
         ),
       ),

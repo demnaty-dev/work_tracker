@@ -3,15 +3,23 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:work_tracker/src/features/profile/services/profile_service.dart';
 
-import 'package:work_tracker/src/features/projects/models/project_model.dart';
-import 'package:work_tracker/src/features/projects/services/projects_services.dart';
+import '../../profile/services/profile_service.dart';
+import '../models/project_model.dart';
+import '../pages/project_detail.dart';
+import '../services/projects_services.dart';
 
 class OldCardWidget extends StatefulWidget {
   final ProjectModel project;
+  final void Function(Object?) onValue;
+  final bool enableFavorite;
 
-  const OldCardWidget({Key? key, required this.project}) : super(key: key);
+  const OldCardWidget({
+    Key? key,
+    required this.project,
+    required this.onValue,
+    this.enableFavorite = true,
+  }) : super(key: key);
 
   @override
   State<OldCardWidget> createState() => _OldCardWidgetState();
@@ -143,7 +151,11 @@ class _OldCardWidgetState extends State<OldCardWidget> {
 
     return InkWell(
       borderRadius: const BorderRadius.all(Radius.circular(16)),
-      onTap: () {},
+      onTap: () => Navigator.pushNamed(
+        context,
+        ProjectDetail.routeName,
+        arguments: widget.project,
+      ).then(widget.onValue),
       child: SizedBox(
         width: 260,
         child: Card(
@@ -176,17 +188,19 @@ class _OldCardWidgetState extends State<OldCardWidget> {
                             child: IconButton(
                               splashRadius: 26,
                               padding: EdgeInsets.zero,
-                              onPressed: () {
-                                _isFavorite = !_isFavorite;
-                                context.read<ProjectsServices?>()!.isFavorite(widget.project.id, _isFavorite).then((value) {
-                                  if (!value) {
-                                    _isFavorite = !_isFavorite;
-                                  }
-                                  setState(() => _isLoading = false);
-                                  return;
-                                });
-                                setState(() => _isLoading = true);
-                              },
+                              onPressed: widget.enableFavorite
+                                  ? () {
+                                      _isFavorite = !_isFavorite;
+                                      context.read<ProjectsServices?>()!.isFavorite(widget.project.id, _isFavorite).then((value) {
+                                        if (!value) {
+                                          _isFavorite = !_isFavorite;
+                                        }
+                                        setState(() => _isLoading = false);
+                                        return;
+                                      });
+                                      setState(() => _isLoading = true);
+                                    }
+                                  : null,
                               icon: Icon(
                                 _isFavorite ? Icons.star : Icons.star_border,
                                 color: _isFavorite ? Colors.amber.shade400 : Colors.grey.shade400,

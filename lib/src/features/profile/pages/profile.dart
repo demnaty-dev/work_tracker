@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:work_tracker/src/features/settings/services/theme_provider.dart';
 
 import '../../../constants/palette.dart';
 import '../../Authentication/models/user_model.dart';
 import '../../profile/pages/edit_profile.dart';
+import '../../settings/services/theme_provider.dart';
 import '../services/profile_service.dart';
 
 class Profile extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:work_tracker/src/features/settings/services/theme_provider.dart';
+import '../features/settings/services/theme_provider.dart';
 
 import '../constants/theme.dart';
 import '../constants/palette.dart';

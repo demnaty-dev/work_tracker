@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:work_tracker/src/constants/palette.dart';
-import 'package:work_tracker/src/features/settings/services/theme_provider.dart';
+import '../../../constants/palette.dart';
+import '../services/theme_provider.dart';
 
 enum ThemeState { light, dark, system }
 

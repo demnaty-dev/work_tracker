@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:work_tracker/src/features/inbox/services/inbox_services.dart';
-import 'package:work_tracker/src/features/profile/services/profile_service.dart';
-import 'package:work_tracker/src/features/projects/services/projects_services.dart';
-import 'package:work_tracker/src/pages/home.dart';
+
+import '../features/inbox/services/inbox_services.dart';
+import '../features/profile/services/profile_service.dart';
+import '../features/projects/services/projects_services.dart';
+import '../pages/home.dart';
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({Key? key}) : super(key: key);
@@ -27,6 +28,10 @@ class _LoadingPageState extends State<LoadingPage> {
     await context.read<ProjectsServices?>()!.fetchProjectsFromCache(false, false, 0);
   }
 
+  Future<void> _initUserComplaints() async {
+    await context.read<ProjectsServices?>()!.fetchComplaintsHasUserFromCache(false, false, 0);
+  }
+
   void _loadHomePage() {
     Navigator.pushReplacementNamed(context, Home.routeName);
   }
@@ -38,6 +43,8 @@ class _LoadingPageState extends State<LoadingPage> {
     await _initUserInboxes();
     setState(() => _whatGoingOn = 'loading projects data');
     await _initUserProjects();
+    setState(() => _whatGoingOn = 'loading complaints data');
+    await _initUserComplaints();
 
     setState(() => _whatGoingOn = 'Done');
     await Future.delayed(const Duration(seconds: 1));

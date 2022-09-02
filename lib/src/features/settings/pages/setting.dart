@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:work_tracker/src/features/settings/pages/theme_preference.dart';
-import 'package:work_tracker/src/services/storage_services.dart';
 
+import 'theme_preference.dart';
+import '../../../services/storage_services.dart';
 import '../../Authentication/services/authentication_services.dart';
 import '../../profile/pages/profile.dart';
 

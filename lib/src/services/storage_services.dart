@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -82,7 +81,6 @@ class StorageServices {
     final json = File(jsonPath);
 
     String imagePath = user.photoUrl;
-    debugPrint('@@@@@@@@@@@@@@ wwwwwwwwwwwww -$imagePath-*');
     if (!user.photoUrl.contains('assets')) {
       imagePath = getPathTo(profilesImages, '${user.uid}.png');
       final image = File(imagePath);

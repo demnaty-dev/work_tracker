@@ -2,12 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:work_tracker/src/features/Authentication/models/user_model.dart';
-import 'package:work_tracker/src/features/profile/services/profile_service.dart';
-import 'package:work_tracker/src/features/projects/models/project_model.dart';
-import 'package:work_tracker/src/features/projects/pages/projects_list.dart';
-import 'package:work_tracker/src/features/projects/services/projects_services.dart';
-import 'package:work_tracker/src/features/projects/widgets/old_card_widget.dart';
+import 'package:work_tracker/src/features/projects/models/complaint_model.dart';
+import 'package:work_tracker/src/features/projects/widgets/old_list_item.dart';
+
+import '../../Authentication/models/user_model.dart';
+import '../../profile/services/profile_service.dart';
+import '../models/project_model.dart';
+import '../pages/projects_list.dart';
+import '../services/projects_services.dart';
+import '../widgets/old_card_widget.dart';
 
 class Projects extends StatefulWidget {
   const Projects({Key? key}) : super(key: key);
@@ -18,11 +21,13 @@ class Projects extends StatefulWidget {
 
 class _ProjectsState extends State<Projects> {
   late final UserModel _userModel;
-  late final List<ProjectModel> _projectsModel;
+  late List<ProjectModel> _projectsModel;
+  late List<ComplaintModel>? _complaintModel;
   late final ImageProvider _imageProfile;
 
   bool _isLoadingUserData = true;
   bool _isLoadingProjects = true;
+  bool _isLoadingComplaints = true;
 
   @override
   void initState() {
@@ -45,6 +50,20 @@ class _ProjectsState extends State<Projects> {
       _projectsModel = value ?? [];
       setState(() => _isLoadingProjects = false);
     });
+
+    context.read<ProjectsServices?>()!.fetchComplaintsHasUserFromCache(true, true, 5).then((value) {
+      _complaintModel = value;
+      setState(() => _isLoadingComplaints = false);
+    });
+  }
+
+  void _onValue(Object? object) {
+    context.read<ProjectsServices?>()!.fetchProjectsFromCache(true, true, 2).then((value) {
+      _projectsModel = value ?? [];
+      setState(() => _isLoadingProjects = false);
+      return;
+    });
+    setState(() => _isLoadingProjects = true);
   }
 
   Widget _buildNotification(ThemeData theme, int num) {
@@ -124,7 +143,10 @@ class _ProjectsState extends State<Projects> {
             )
           : ListView.separated(
               itemBuilder: (context, index) {
-                return OldCardWidget(project: _projectsModel.elementAt(index));
+                return OldCardWidget(
+                  project: _projectsModel.elementAt(index),
+                  onValue: _onValue,
+                );
               },
               separatorBuilder: (context, index) {
                 return const SizedBox(width: 20);
@@ -170,7 +192,7 @@ class _ProjectsState extends State<Projects> {
     );
   }
 
-  Widget _buildInProgress(ThemeData theme) {
+  Widget _buildComplaints(ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
@@ -182,7 +204,7 @@ class _ProjectsState extends State<Projects> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'In Progress',
+                  'Recent Complaints',
                   style: theme.textTheme.headline6!.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -198,9 +220,61 @@ class _ProjectsState extends State<Projects> {
               ],
             ),
           ),
-          _buildList(theme),
+          _isLoadingComplaints ? const CircularProgressIndicator() : _buildList(theme),
         ],
       ),
+    );
+  }
+
+  Widget _buildErrorMsg() {
+    return Stack(
+      children: [
+        ListView(),
+        Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Icon(
+                Icons.error,
+                color: Color(0xFF848A94),
+              ),
+              SizedBox(width: 4),
+              Text("Something went wrong"),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmptyMsg() {
+    return Stack(
+      children: [
+        ListView(),
+        Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Icon(
+                Icons.inbox,
+                color: Color(0xFF848A94),
+              ),
+              SizedBox(width: 4),
+              Text("Inbox is empty"),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildListView(ThemeData theme) {
+    return ListView.builder(
+      itemCount: _complaintModel!.length,
+      itemBuilder: (context, index) {
+        return OldListItem(complaint: _complaintModel!.elementAt(index));
+      },
     );
   }
 
@@ -208,10 +282,14 @@ class _ProjectsState extends State<Projects> {
     return Expanded(
       child: RefreshIndicator(
         onRefresh: () async {
-          await Future.delayed(const Duration(seconds: 2));
-          debugPrint('Refresh List');
+          _complaintModel = await context.read<ProjectsServices?>()!.fetchComplaintsHasUserFromCache(true, true, 5);
+          setState(() {});
         },
-        child: ListView(),
+        child: _complaintModel == null
+            ? _buildErrorMsg()
+            : _complaintModel!.isEmpty
+                ? _buildEmptyMsg()
+                : _buildListView(theme),
       ),
     );
   }
@@ -224,7 +302,7 @@ class _ProjectsState extends State<Projects> {
         _buildHeader(theme),
         _buildProjects(theme),
         Expanded(
-          child: _buildInProgress(theme),
+          child: _buildComplaints(theme),
         ),
       ],
     );

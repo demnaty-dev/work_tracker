@@ -25,32 +25,30 @@ class OldListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return ListTile(
       onTap: onTap,
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: color,
-          child: Text(
-            String.fromCharCode(charAvatar),
-            style: const TextStyle(
-              color: Colors.white,
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w600,
-              fontSize: 24,
-            ),
+      leading: CircleAvatar(
+        backgroundColor: color,
+        child: Text(
+          String.fromCharCode(charAvatar),
+          style: const TextStyle(
+            color: Colors.white,
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w600,
+            fontSize: 24,
           ),
         ),
-        title: Text(
-          title,
-          style: textTheme.subtitle1!.copyWith(
-            fontWeight: isSeen ? FontWeight.normal : FontWeight.bold,
-          ),
+      ),
+      title: Text(
+        title,
+        style: textTheme.subtitle1!.copyWith(
+          fontWeight: isSeen ? FontWeight.normal : FontWeight.bold,
         ),
-        subtitle: Text('$subtitle...'),
-        trailing: Text(
-          DateFormat.yMMMd().format(date),
-          style: textTheme.subtitle2,
-        ),
+      ),
+      subtitle: Text('$subtitle...'),
+      trailing: Text(
+        DateFormat.yMMMd().format(date),
+        style: textTheme.subtitle2,
       ),
     );
   }

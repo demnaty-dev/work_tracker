@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:work_tracker/src/features/projects/pages/projects_list.dart';
-import 'package:work_tracker/src/features/settings/pages/theme_preference.dart';
-import 'package:work_tracker/src/pages/loading_page.dart';
+import 'package:work_tracker/src/features/projects/pages/complaint.dart';
 
 import 'features/Authentication/pages/forgot_password.dart';
+import 'features/Authentication/pages/log_in.dart';
 import 'features/inbox/pages/inbox_detail.dart';
 import 'features/pdf_viewer/pages/pdf_viewer.dart';
 import 'features/profile/pages/edit_profile.dart';
 import 'features/profile/pages/profile.dart';
-
-import 'features/Authentication/pages/log_in.dart';
+import 'features/projects/pages/project_detail.dart';
+import 'features/projects/pages/projects_list.dart';
+import 'features/settings/pages/theme_preference.dart';
 import 'features/settings/services/theme_provider.dart';
+import 'features/room/pages/room.dart';
+
+import 'pages/loading_page.dart';
 import 'pages/home.dart';
 
 import 'constants/theme.dart';
@@ -63,6 +66,9 @@ class MyApp extends StatelessWidget {
         InboxDetail.routeName: (_) => const InboxDetail(),
         PDFViewer.routeName: (_) => const PDFViewer(),
         ProjectsList.routeName: (_) => const ProjectsList(),
+        Room.routeName: (_) => const Room(),
+        ProjectDetail.routeName: (_) => const ProjectDetail(),
+        Complaint.routeName: (_) => const Complaint(),
       },
     );
   }

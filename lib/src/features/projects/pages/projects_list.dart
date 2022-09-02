@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:work_tracker/src/constants/palette.dart';
-import 'package:work_tracker/src/features/projects/models/project_model.dart';
-import 'package:work_tracker/src/features/projects/services/projects_services.dart';
-import 'package:work_tracker/src/features/projects/widgets/old_card_widget.dart';
-import 'package:work_tracker/src/features/settings/services/theme_provider.dart';
+
+import '../../../constants/palette.dart';
+import '../../settings/services/theme_provider.dart';
+import '../models/project_model.dart';
+import '../services/projects_services.dart';
+import '../widgets/old_card_widget.dart';
 
 class ProjectsList extends StatefulWidget {
   static const routeName = '/projects-list';
@@ -28,6 +29,15 @@ class _ProjectsListState extends State<ProjectsList> {
         setState(() => _isLoading = false);
       },
     );
+  }
+
+  void _onValue(Object? object) {
+    context.read<ProjectsServices?>()!.fetchProjectsFromCache(true, false, 0).then((value) {
+      _projects = value;
+      setState(() => _isLoading = false);
+      return;
+    });
+    setState(() => _isLoading = true);
   }
 
   Widget _buildErrorMsg() {
@@ -78,7 +88,11 @@ class _ProjectsListState extends State<ProjectsList> {
       itemBuilder: (context, index) {
         return SizedBox(
           height: 160,
-          child: OldCardWidget(project: _projects!.elementAt(index)),
+          child: OldCardWidget(
+            project: _projects!.elementAt(index),
+            onValue: _onValue,
+            enableFavorite: false,
+          ),
         );
       },
       separatorBuilder: (context, index) {
