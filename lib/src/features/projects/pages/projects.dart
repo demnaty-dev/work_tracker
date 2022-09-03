@@ -2,15 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:work_tracker/src/features/projects/models/complaint_model.dart';
-import 'package:work_tracker/src/features/projects/widgets/old_list_item.dart';
 
 import '../../Authentication/models/user_model.dart';
 import '../../profile/services/profile_service.dart';
 import '../models/project_model.dart';
+import '../models/complaint_model.dart';
 import '../pages/projects_list.dart';
 import '../services/projects_services.dart';
 import '../widgets/old_card_widget.dart';
+import '../widgets/old_list_item.dart';
 
 class Projects extends StatefulWidget {
   const Projects({Key? key}) : super(key: key);
@@ -261,7 +261,7 @@ class _ProjectsState extends State<Projects> {
                 color: Color(0xFF848A94),
               ),
               SizedBox(width: 4),
-              Text("Inbox is empty"),
+              Text("Complaints is empty"),
             ],
           ),
         ),
@@ -282,7 +282,7 @@ class _ProjectsState extends State<Projects> {
     return Expanded(
       child: RefreshIndicator(
         onRefresh: () async {
-          _complaintModel = await context.read<ProjectsServices?>()!.fetchComplaintsHasUserFromCache(true, true, 5);
+          _complaintModel = await context.read<ProjectsServices?>()!.fetchComplaintsHasUserFromCache(false, true, 5);
           setState(() {});
         },
         child: _complaintModel == null

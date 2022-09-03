@@ -104,7 +104,7 @@ class ProjectsServices {
             )
             .limit(limit);
       } else {
-        query = _projects
+        query = _complaint
             .where(
               "projectId",
               isEqualTo: id,

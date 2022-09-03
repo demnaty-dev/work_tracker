@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:work_tracker/src/features/profile/services/profile_service.dart';
+import 'package:work_tracker/src/features/room/pages/room.dart';
 
-import 'package:work_tracker/src/features/projects/models/complaint_model.dart';
+import '../../profile/services/profile_service.dart';
+import '../models/complaint_model.dart';
 
 class OldListItem extends StatefulWidget {
   final ComplaintModel complaint;
@@ -25,7 +26,7 @@ class _OldListItemState extends State<OldListItem> {
   @override
   void initState() {
     super.initState();
-    _complaint = widget.complaint.complaint.length > 27 ? '${widget.complaint.complaint.substring(0, 27)}...' : widget.complaint.complaint;
+    _complaint = widget.complaint.complaint.length > 20 ? '${widget.complaint.complaint.substring(0, 20)}...' : widget.complaint.complaint;
 
     context.read<ProfileService?>()!.getProfileImage(widget.complaint.createdBy).then(
       (image) {
@@ -51,7 +52,11 @@ class _OldListItemState extends State<OldListItem> {
           : CircleAvatar(
               backgroundImage: imageProfile,
             ),
-      onTap: () {},
+      onTap: () => Navigator.pushNamed(
+        context,
+        Room.routeName,
+        arguments: widget.complaint,
+      ),
       title: Text(widget.complaint.title),
       subtitle: Text(_complaint),
       trailing: Text(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:work_tracker/src/features/projects/models/complaint_model.dart';
 import 'package:work_tracker/src/features/projects/pages/complaint.dart';
 import 'package:work_tracker/src/features/projects/services/projects_services.dart';
+import 'package:work_tracker/src/features/projects/widgets/old_list_item.dart';
 
 import '../../../constants/palette.dart';
 import '../../settings/services/theme_provider.dart';
@@ -19,14 +21,21 @@ class ProjectDetail extends StatefulWidget {
 
 class _ProjectDetailState extends State<ProjectDetail> {
   bool _isLoading = false;
+  bool _isLoadingComplaints = true;
   late bool _isFavorite;
   late final ProjectModel project;
+  late List<ComplaintModel>? _complaintModel;
 
   @override
   void didChangeDependencies() {
     project = ModalRoute.of(context)!.settings.arguments as ProjectModel;
     _isFavorite = project.isFavorite;
-
+    context.read<ProjectsServices?>()!.fetchComplaintsByProjectFromCache(true, false, 0, project.id).then(
+      (value) {
+        _complaintModel = value;
+        setState(() => _isLoadingComplaints = false);
+      },
+    );
     super.didChangeDependencies();
   }
 
@@ -80,6 +89,75 @@ class _ProjectDetailState extends State<ProjectDetail> {
     );
   }
 
+  Widget _buildErrorMsg() {
+    return Stack(
+      children: [
+        ListView(),
+        Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Icon(
+                Icons.error,
+                color: Color(0xFF848A94),
+              ),
+              SizedBox(width: 4),
+              Text("Something went wrong"),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmptyMsg() {
+    return Stack(
+      children: [
+        ListView(),
+        Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Icon(
+                Icons.inbox,
+                color: Color(0xFF848A94),
+              ),
+              SizedBox(width: 4),
+              Text("Complaints is empty"),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildListView(ThemeData theme) {
+    return ListView.builder(
+      itemCount: _complaintModel!.length,
+      itemBuilder: (context, index) {
+        return OldListItem(complaint: _complaintModel!.elementAt(index));
+      },
+    );
+  }
+
+  Widget _buildList(ThemeData theme) {
+    return Expanded(
+      child: RefreshIndicator(
+        onRefresh: () async {
+          _complaintModel = await context.read<ProjectsServices?>()!.fetchComplaintsByProjectFromCache(false, false, 0, project.id);
+          debugPrint(project.id);
+          setState(() {});
+        },
+        child: _complaintModel == null
+            ? _buildErrorMsg()
+            : _complaintModel!.isEmpty
+                ? _buildEmptyMsg()
+                : _buildListView(theme),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -128,13 +206,21 @@ class _ProjectDetailState extends State<ProjectDetail> {
             ),
             const SizedBox(height: 24),
             _buildContent(theme.textTheme, project.description),
-            const SizedBox(height: 60),
+            const SizedBox(height: 30),
             TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, Complaint.routeName, arguments: project);
+                Navigator.pushNamed(context, Complaint.routeName, arguments: project).then(
+                  (value) async {
+                    _complaintModel = await context.read<ProjectsServices?>()!.fetchComplaintsByProjectFromCache(true, false, 0, project.id);
+                    debugPrint(project.id);
+                    setState(() {});
+                  },
+                );
               },
               child: const Text('Create a new complaint'),
             ),
+            const SizedBox(height: 30),
+            _isLoadingComplaints ? const CircularProgressIndicator() : _buildList(theme),
           ],
         ),
       ),
