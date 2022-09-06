@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../features/inbox/services/inbox_services.dart';
 import '../features/profile/services/profile_service.dart';
@@ -14,7 +15,7 @@ class LoadingPage extends StatefulWidget {
 }
 
 class _LoadingPageState extends State<LoadingPage> {
-  String _whatGoingOn = 'start';
+  String _whatGoingOn = '';
 
   Future<void> _initUserProfile() async {
     await context.read<ProfileService?>()!.userModel;
@@ -37,17 +38,22 @@ class _LoadingPageState extends State<LoadingPage> {
   }
 
   Future<void> _loadingHomePage() async {
-    setState(() => _whatGoingOn = 'loading profile data');
-    await _initUserProfile();
-    setState(() => _whatGoingOn = 'loading inboxes data');
-    await _initUserInboxes();
-    setState(() => _whatGoingOn = 'loading projects data');
-    await _initUserProjects();
-    setState(() => _whatGoingOn = 'loading complaints data');
-    await _initUserComplaints();
+    SharedPreferences preference = await SharedPreferences.getInstance();
+    final fetched = preference.getBool("fetched") ?? false;
+    if (!fetched) {
+      setState(() => _whatGoingOn = 'loading profile data');
+      await _initUserProfile();
+      setState(() => _whatGoingOn = 'loading inboxes data');
+      await _initUserInboxes();
+      setState(() => _whatGoingOn = 'loading projects data');
+      await _initUserProjects();
+      setState(() => _whatGoingOn = 'loading complaints data');
+      await _initUserComplaints();
 
-    setState(() => _whatGoingOn = 'Done');
-    await Future.delayed(const Duration(seconds: 1));
+      await preference.setBool("fetched", true);
+      setState(() => _whatGoingOn = 'Done');
+      await Future.delayed(const Duration(seconds: 1));
+    }
     _loadHomePage();
   }
 

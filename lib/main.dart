@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:work_tracker/src/features/room/services/messages_services.dart';
 
 import 'firebase_options.dart';
 import 'src/features/Authentication/services/authentication_services.dart';
@@ -57,6 +58,13 @@ void main() async {
             final user = context.read<AuthenticationServices>().currentUser()!;
 
             return ProfileService(user, context.read<StorageServices?>()!);
+          },
+        ),
+        ProxyProvider<bool, MessagesServices?>(
+          update: (context, value, __) {
+            final user = context.read<AuthenticationServices>().currentUser();
+            if (user == null) return null;
+            return MessagesServices(user);
           },
         ),
       ],

@@ -36,7 +36,7 @@ class _LogInState extends State<LogIn> {
       setState(() => _isLoading = true);
       try {
         //await context.read<AuthenticationServices>().signInWithEmailAndPassword(_userEmail, _password);
-        await context.read<AuthenticationServices>().signInWithEmailAndPassword('abdelhakimdaryf@gmail.com', 'password');
+        await context.read<AuthenticationServices>().signInWithEmailAndPassword('yassine.mazrawi@gmail.com', 'password');
       } on FirebaseAuthException catch (err) {
         setState(() => _isLoading = false);
         debugPrint('-----------------${err.code}');

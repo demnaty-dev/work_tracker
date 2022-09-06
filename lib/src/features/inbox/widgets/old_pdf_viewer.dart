@@ -54,7 +54,7 @@ class _OldPdfViewerState extends State<OldPdfViewer> {
   }
 
   void _openPDF() {
-    final path = context.read<StorageServices?>()!.getPathTo(StorageServices.documents, _fileName);
+    final path = context.read<StorageServices?>()!.getPathToSync(StorageServices.documents, _fileName);
 
     final title = widget.fileName.substring(0, widget.fileName.lastIndexOf('.'));
 
@@ -65,10 +65,10 @@ class _OldPdfViewerState extends State<OldPdfViewer> {
     );
   }
 
-  Future<void> _downloadPDF(Future<DownloadTask> Function() getDownloadTask) async {
+  Future<void> _downloadPDF(DownloadTask Function() getDownloadTask) async {
     await context.read<StorageServices?>()!.initDirectories();
     setState(() => _isLoading = true);
-    _downloadTask = await getDownloadTask();
+    _downloadTask = getDownloadTask();
     _isDownloading = true;
     _downloadTask.snapshotEvents.listen((taskSnapshot) {
       switch (taskSnapshot.state) {
@@ -105,7 +105,7 @@ class _OldPdfViewerState extends State<OldPdfViewer> {
         onPressed: () {
           _downloadPDF(
             () {
-              final path = context.read<StorageServices?>()!.getPathTo(
+              final path = context.read<StorageServices?>()!.getPathToSync(
                     StorageServices.documents,
                     _fileName,
                   );

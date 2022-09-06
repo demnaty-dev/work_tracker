@@ -76,7 +76,7 @@ class InboxServices {
     }
   }
 
-  Future<DownloadTask> downloadFile(String url, String filePath) async {
+  DownloadTask downloadFile(String url, String filePath) {
     final gsReference = _storage.refFromURL(url);
     final file = File(filePath);
 

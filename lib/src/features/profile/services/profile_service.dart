@@ -89,8 +89,6 @@ class ProfileService {
     await _dataRef.child('users/${_user.uid}').update(userInfo);
   }
 
-  // Does I need this one ??
-  // later i will know :)
   Future<void> refreshUserFromFirebase() async {
     await _userFromFirebase();
   }

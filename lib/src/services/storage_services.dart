@@ -65,11 +65,16 @@ class StorageServices {
     }
   }
 
-  String getPathTo(int folder, String fileName) {
+  String getPathToSync(int folder, String fileName) {
+    return '${_appDirectory!}${_subDirs[folder]}/$fileName';
+  }
+
+  Future<String> getPathTo(int folder, String fileName) async {
     return '${_appDirectory!}${_subDirs[folder]}/$fileName';
   }
 
   Future<bool> fileExists(int folder, String fileName) async {
+    await appDirectory;
     final url = '${await appDirectory}${_subDirs[folder]}/$fileName';
     return await File(url).exists();
   }
@@ -77,12 +82,12 @@ class StorageServices {
   Future<void> saveProfile(UserModel user) async {
     await initDirectories();
 
-    final jsonPath = getPathTo(profilesData, '${user.uid}.json');
+    final jsonPath = getPathToSync(profilesData, '${user.uid}.json');
     final json = File(jsonPath);
 
     String imagePath = user.photoUrl;
     if (!user.photoUrl.contains('assets')) {
-      imagePath = getPathTo(profilesImages, '${user.uid}.png');
+      imagePath = getPathToSync(profilesImages, '${user.uid}.png');
       final image = File(imagePath);
 
       final gsReference = _storage.refFromURL(user.photoUrl);
@@ -100,7 +105,7 @@ class StorageServices {
 
   Future<UserModel?> getProfile(String uid) async {
     await initDirectories();
-    final jsonPath = getPathTo(profilesData, '$uid.json');
+    final jsonPath = getPathToSync(profilesData, '$uid.json');
     final jsonFile = File(jsonPath);
 
     if (!jsonFile.existsSync()) return null;
@@ -117,5 +122,19 @@ class StorageServices {
     if (await path.exists()) {
       path.delete(recursive: true);
     }
+  }
+
+  UploadTask uploadImage(String path) {
+    final file = File(path);
+
+    return _storage.ref('media/image/').child(path.substring(path.lastIndexOf('/') + 1)).putFile(file);
+  }
+
+  DownloadTask downloadImage(String path, String name) {
+    final imagePath = getPathToSync(images, name);
+    final image = File(imagePath);
+
+    final gsReference = _storage.refFromURL(path);
+    return gsReference.writeToFile(image);
   }
 }
