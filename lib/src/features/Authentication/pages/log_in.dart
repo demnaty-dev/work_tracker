@@ -24,23 +24,19 @@ class _LogInState extends State<LogIn> {
   String _password = '';
 
   Future<void> _trySubmit() async {
-    //if (_formKey.currentState == null) return;
+    if (_formKey.currentState == null) return;
 
-    //final isValid = _formKey.currentState!.validate();
-    const isValid = true;
-    //FocusScope.of(context).unfocus();
+    final isValid = _formKey.currentState!.validate();
+    FocusScope.of(context).unfocus();
 
     if (isValid) {
-      //_formKey.currentState!.save();
+      _formKey.currentState!.save();
 
       setState(() => _isLoading = true);
       try {
-        //await context.read<AuthenticationServices>().signInWithEmailAndPassword(_userEmail, _password);
-        await context.read<AuthenticationServices>().signInWithEmailAndPassword('yassine.mazrawi@gmail.com', 'password');
+        await context.read<AuthenticationServices>().signInWithEmailAndPassword(_userEmail, _password);
       } on FirebaseAuthException catch (err) {
         setState(() => _isLoading = false);
-        debugPrint('-----------------${err.code}');
-        debugPrint('-----------------${err.message}');
         String message = '';
         if (err.code == 'wrong-password') {
           message = 'The password is wrong';

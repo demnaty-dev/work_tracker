@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:work_tracker/src/features/room/services/messages_services.dart';
 
 import '../../settings/services/theme_provider.dart';
+import '../services/messages_services.dart';
 import 'old_icon_button.dart';
 
 class OldInput extends StatefulWidget {
@@ -20,7 +22,35 @@ class OldInput extends StatefulWidget {
 
 class _OldInputState extends State<OldInput> {
   final _messageController = TextEditingController();
+  final _recorder = FlutterSoundRecorder();
   bool _isTyping = false;
+  bool _isRecording = false;
+  bool _isRecorderReady = false;
+
+  @override
+  void initState() {
+    super.initState();
+    initRecorder();
+  }
+
+  Future<void> initRecorder() async {
+    final status = await Permission.microphone.request();
+
+    if (status != PermissionStatus.granted) {
+      throw 'Microphone permission not granted';
+    }
+
+    await _recorder.openRecorder();
+    _isRecorderReady = true;
+
+    _recorder.setSubscriptionDuration(const Duration(milliseconds: 500));
+  }
+
+  @override
+  void dispose() {
+    _recorder.closeRecorder();
+    super.dispose();
+  }
 
   Future<void> _pickPictureFromCam() async {
     final ImagePicker picker = ImagePicker();
@@ -63,7 +93,22 @@ class _OldInputState extends State<OldInput> {
     setState(() => _isTyping = false);
   }
 
-  Future<void> _recordVoice() async {}
+  Future<void> _recordVoice() async {
+    if (!_isRecorderReady) return;
+    await _recorder.startRecorder(toFile: widget.id);
+
+    setState(() => _isRecording = true);
+  }
+
+  Future<void> _stopRecording() async {
+    await _recorder.stopRecorder().then(
+      (value) {
+        if (value == null) return;
+        context.read<MessagesServices?>()!.sendAudioMessage(widget.id, value);
+      },
+    );
+    setState(() => _isRecording = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,22 +140,41 @@ class _OldInputState extends State<OldInput> {
                 children: [
                   const SizedBox(width: 20),
                   Expanded(
-                    child: TextField(
-                      controller: _messageController,
-                      maxLines: null,
-                      decoration: const InputDecoration(
-                        hintText: 'Message',
-                        hintStyle: TextStyle(color: Colors.grey),
-                        border: InputBorder.none,
-                      ),
-                      onChanged: (value) {
-                        if (value.isEmpty) {
-                          setState(() => _isTyping = false);
-                        } else {
-                          setState(() => _isTyping = true);
-                        }
-                      },
-                    ),
+                    child: _isRecording
+                        ? StreamBuilder<RecordingDisposition>(
+                            stream: _recorder.onProgress,
+                            builder: (context, snapshot) {
+                              final duration = snapshot.hasData ? snapshot.data!.duration : Duration.zero;
+                              String twoDigits(int n) => n.toString().padLeft(2, '0');
+                              final twoDigitMinutes = twoDigits(duration.inMinutes);
+                              final twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+
+                              return TextField(
+                                enabled: false,
+                                decoration: InputDecoration(
+                                  hintText: '$twoDigitMinutes:$twoDigitSeconds',
+                                  hintStyle: const TextStyle(color: Colors.grey),
+                                  border: InputBorder.none,
+                                ),
+                              );
+                            },
+                          )
+                        : TextField(
+                            controller: _messageController,
+                            maxLines: null,
+                            decoration: const InputDecoration(
+                              hintText: 'Message',
+                              hintStyle: TextStyle(color: Colors.grey),
+                              border: InputBorder.none,
+                            ),
+                            onChanged: (value) {
+                              if (value.isEmpty) {
+                                setState(() => _isTyping = false);
+                              } else {
+                                setState(() => _isTyping = true);
+                              }
+                            },
+                          ),
                   ),
                   if (!_isTyping)
                     OldIconButton(
@@ -131,8 +195,16 @@ class _OldInputState extends State<OldInput> {
         ),
         const SizedBox(width: 4),
         OldIconButton(
-          icon: _isTyping ? Icons.send_rounded : Icons.mic,
-          onPressed: _isTyping ? _sendMessage : _recordVoice,
+          icon: _isTyping
+              ? Icons.send_rounded
+              : _isRecording
+                  ? Icons.stop
+                  : Icons.mic,
+          onPressed: _isTyping
+              ? _sendMessage
+              : _isRecording
+                  ? _stopRecording
+                  : _recordVoice,
           color: theme.primaryColor,
           iconColor: Colors.white,
         ),

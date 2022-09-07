@@ -33,8 +33,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         await context.read<AuthenticationServices>().resetPassword(_userEmail);
         onSuccess();
       } on FirebaseAuthException catch (err) {
-        debugPrint(err.code);
-        debugPrint(err.message);
         String message = '';
         if (err.code == 'user-not-found') {
           message = 'There is no user with this email';

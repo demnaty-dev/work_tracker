@@ -5,6 +5,7 @@ class OldIconButton extends StatelessWidget {
   final VoidCallback onPressed;
   final Color color;
   final Color iconColor;
+  final double? iconSize;
 
   const OldIconButton({
     Key? key,
@@ -12,6 +13,7 @@ class OldIconButton extends StatelessWidget {
     required this.onPressed,
     this.color = Colors.transparent,
     this.iconColor = Colors.grey,
+    this.iconSize,
   }) : super(key: key);
 
   @override
@@ -23,6 +25,7 @@ class OldIconButton extends StatelessWidget {
         child: IconButton(
           splashRadius: 30,
           onPressed: onPressed,
+          iconSize: iconSize,
           icon: Icon(
             icon,
             color: iconColor,

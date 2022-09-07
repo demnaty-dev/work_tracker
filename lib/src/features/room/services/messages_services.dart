@@ -32,6 +32,16 @@ class MessagesServices {
     });
   }
 
+  Future<void> sendAudioMessage(String id, String path) async {
+    await _firestore.doc(id).collection('messages').add({
+      "content": path,
+      "contentType": 2,
+      "sentAt": Timestamp.fromDate(DateTime.now()),
+      "sentBy": uid,
+      "name": "nan",
+    });
+  }
+
   Future<void> updatePathAndName(String id, String messageId, String path) async {
     await _firestore.doc(id).collection('messages').doc(messageId).update(
       {

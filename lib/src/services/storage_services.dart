@@ -130,11 +130,25 @@ class StorageServices {
     return _storage.ref('media/image/').child(path.substring(path.lastIndexOf('/') + 1)).putFile(file);
   }
 
+  UploadTask uploadAudio(String path) {
+    final file = File(path);
+
+    return _storage.ref('media/audio/').child(path.substring(path.lastIndexOf('/') + 1)).putFile(file);
+  }
+
   DownloadTask downloadImage(String path, String name) {
     final imagePath = getPathToSync(images, name);
     final image = File(imagePath);
 
     final gsReference = _storage.refFromURL(path);
     return gsReference.writeToFile(image);
+  }
+
+  DownloadTask downloadAudio(String path, String name) {
+    final audioPath = getPathToSync(audios, name);
+    final audio = File(audioPath);
+
+    final gsReference = _storage.refFromURL(path);
+    return gsReference.writeToFile(audio);
   }
 }

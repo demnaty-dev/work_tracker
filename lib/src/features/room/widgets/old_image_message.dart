@@ -43,7 +43,10 @@ class _OldImageMessageState extends State<OldImageMessage> {
     if (widget.path.contains('com.example.work_tracker')) {
       _image = FileImage(File(widget.path));
       if (widget.path.contains('/cache/')) {
-        _renameFile();
+        _renameFile().then((value) {
+          _uploadImage();
+          setState(() {});
+        });
       } else {
         _uploadImage();
       }
@@ -138,7 +141,6 @@ class _OldImageMessageState extends State<OldImageMessage> {
               setState(
                 () {
                   _progress = taskSnapshot.bytesTransferred / taskSnapshot.totalBytes;
-                  debugPrint(_progress.toString());
                 },
               );
             }

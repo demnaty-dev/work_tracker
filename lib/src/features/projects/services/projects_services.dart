@@ -124,8 +124,6 @@ class ProjectsServices {
           list.add(ComplaintModel.fromJson(id: doc.id, json: data));
         }
       }
-
-      debugPrint('ffffr length ${list.length}');
       return list;
     } on FirebaseException catch (err) {
       debugPrint('Firebase Exception $err @@@@@@@@@@@');
@@ -180,7 +178,6 @@ class ProjectsServices {
         }
       }
 
-      // debugPrint('List length ${list.length}');
       return list;
     } on FirebaseException catch (err) {
       debugPrint('Firebase Exception $err @@@@@@@@@@@');

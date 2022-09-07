@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:work_tracker/src/features/projects/models/complaint_model.dart';
 import 'package:work_tracker/src/features/room/services/messages_services.dart';
+import 'package:work_tracker/src/features/room/widgets/old_audio_message.dart';
 import 'package:work_tracker/src/features/room/widgets/old_image_message.dart';
 import 'package:work_tracker/src/features/room/widgets/old_input.dart';
 import 'package:work_tracker/src/features/room/widgets/old_text_message.dart';
@@ -102,10 +103,13 @@ class _RoomState extends State<Room> {
                   path: json['content'],
                 );
               } else {
-                return OldTextMessage(
+                return OldAudioMessage(
                   me: _uid == json['sentBy'],
+                  id: _complaint.id,
+                  name: json['name'],
+                  messageId: snapshot.data!.docs[index].id,
                   date: (json['sentAt']! as Timestamp).toDate(),
-                  content: json['content'],
+                  path: json['content'],
                 );
               }
             },

@@ -35,7 +35,6 @@ class MyApp extends StatelessWidget {
     }
 
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'Work Tracker',
       theme: lightThemeData,
       darkTheme: darkThemeData,

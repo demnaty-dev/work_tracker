@@ -146,7 +146,7 @@ class _ProjectDetailState extends State<ProjectDetail> {
       child: RefreshIndicator(
         onRefresh: () async {
           _complaintModel = await context.read<ProjectsServices?>()!.fetchComplaintsByProjectFromCache(false, false, 0, project.id);
-          debugPrint(project.id);
+
           setState(() {});
         },
         child: _complaintModel == null
@@ -212,7 +212,7 @@ class _ProjectDetailState extends State<ProjectDetail> {
                 Navigator.pushNamed(context, Complaint.routeName, arguments: project).then(
                   (value) async {
                     _complaintModel = await context.read<ProjectsServices?>()!.fetchComplaintsByProjectFromCache(true, false, 0, project.id);
-                    debugPrint(project.id);
+
                     setState(() {});
                   },
                 );

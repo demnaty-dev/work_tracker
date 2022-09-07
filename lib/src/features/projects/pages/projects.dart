@@ -70,9 +70,7 @@ class _ProjectsState extends State<Projects> {
     return Stack(
       children: [
         IconButton(
-          onPressed: () {
-            debugPrint('Open notifications page');
-          },
+          onPressed: () {},
           icon: Icon(
             Icons.notifications,
             color: theme.primaryColor,
