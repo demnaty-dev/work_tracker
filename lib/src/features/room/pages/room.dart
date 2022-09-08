@@ -7,6 +7,7 @@ import 'package:work_tracker/src/features/room/widgets/old_audio_message.dart';
 import 'package:work_tracker/src/features/room/widgets/old_image_message.dart';
 import 'package:work_tracker/src/features/room/widgets/old_input.dart';
 import 'package:work_tracker/src/features/room/widgets/old_text_message.dart';
+import 'package:work_tracker/src/features/room/widgets/old_waiting_message.dart';
 
 import '../../../constants/palette.dart';
 import '../../settings/services/theme_provider.dart';
@@ -87,15 +88,24 @@ class _RoomState extends State<Room> {
               final json = snapshot.data!.docs[index].data() as Map<String, dynamic>;
               final type = json['contentType'] as int;
 
+              final isMe = _uid == json['sentBy'];
+
+              if (!isMe && type != 0 && json['content'].contains('com.example.work_tracker')) {
+                return OldWaitingMessage(
+                  me: isMe,
+                  date: (json['sentAt']! as Timestamp).toDate(),
+                );
+              }
+
               if (type == 0) {
                 return OldTextMessage(
-                  me: _uid == json['sentBy'],
+                  me: isMe,
                   date: (json['sentAt']! as Timestamp).toDate(),
                   content: json['content'],
                 );
               } else if (type == 1) {
                 return OldImageMessage(
-                  me: _uid == json['sentBy'],
+                  me: isMe,
                   id: _complaint.id,
                   name: json['name'],
                   messageId: snapshot.data!.docs[index].id,
@@ -104,7 +114,7 @@ class _RoomState extends State<Room> {
                 );
               } else {
                 return OldAudioMessage(
-                  me: _uid == json['sentBy'],
+                  me: isMe,
                   id: _complaint.id,
                   name: json['name'],
                   messageId: snapshot.data!.docs[index].id,

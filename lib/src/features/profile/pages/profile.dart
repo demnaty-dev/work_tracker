@@ -88,61 +88,63 @@ class _ProfileState extends State<Profile> {
                   await context.read<ProfileService?>()!.refreshUserFromFirebase();
                   setState(() {});
                 },
-                child: Stack(children: [
-                  Column(
-                    children: [
-                      const SizedBox(height: 24),
-                      SingleChildScrollView(
-                        child: FutureBuilder<UserModel>(
-                          future: Future.value(userModel),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Center(child: CircularProgressIndicator());
-                            }
-                            if (snapshot.data == null) {
-                              return const Center(
-                                child: Text('empty'),
+                child: Stack(
+                  children: [
+                    Column(
+                      children: [
+                        const SizedBox(height: 24),
+                        SingleChildScrollView(
+                          child: FutureBuilder<UserModel>(
+                            future: Future.value(userModel),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return const Center(child: CircularProgressIndicator());
+                              }
+                              if (snapshot.data == null) {
+                                return const Center(
+                                  child: Text('empty'),
+                                );
+                              }
+                              ImageProvider image;
+
+                              if (snapshot.data!.photoUrl.startsWith('assets')) {
+                                image = AssetImage(snapshot.data!.photoUrl);
+                              } else if (snapshot.data!.photoUrl.contains('/Databases')) {
+                                image = FileImage(File(snapshot.data!.photoUrl));
+                              } else {
+                                image = NetworkImage(snapshot.data!.photoUrl);
+                              }
+
+                              return Column(
+                                children: [
+                                  CircleAvatar(
+                                    backgroundImage: image,
+                                    backgroundColor: Colors.transparent,
+                                    radius: 70,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    snapshot.data!.displayName,
+                                    style: Theme.of(context).textTheme.headline6,
+                                  ),
+                                  const SizedBox(height: 32),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Text(snapshot.data!.email),
+                                      Text(snapshot.data!.phone),
+                                    ],
+                                  ),
+                                ],
                               );
-                            }
-                            ImageProvider image;
-
-                            if (snapshot.data!.photoUrl.startsWith('assets')) {
-                              image = AssetImage(snapshot.data!.photoUrl);
-                            } else if (snapshot.data!.photoUrl.contains('/Databases')) {
-                              image = FileImage(File(snapshot.data!.photoUrl));
-                            } else {
-                              image = NetworkImage(snapshot.data!.photoUrl);
-                            }
-
-                            return Column(
-                              children: [
-                                CircleAvatar(
-                                  backgroundImage: image,
-                                  backgroundColor: Colors.transparent,
-                                  radius: 70,
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  snapshot.data!.displayName,
-                                  style: Theme.of(context).textTheme.headline6,
-                                ),
-                                const SizedBox(height: 32),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Text(snapshot.data!.email),
-                                    Text(snapshot.data!.phone),
-                                  ],
-                                ),
-                              ],
-                            );
-                          },
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  ListView(),
-                ]),
+                      ],
+                    ),
+                    ListView(),
+                  ],
+                ),
               ),
             ),
           ],

@@ -59,7 +59,7 @@ class _LogInState extends State<LogIn> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        minimum: const EdgeInsets.all(24),
+        minimum: const EdgeInsets.symmetric(horizontal: 24),
         child: LayoutBuilder(
           builder: (context, constraints) {
             return SingleChildScrollView(

@@ -142,14 +142,14 @@ class _OldAudioMessageState extends State<OldAudioMessage> {
 
     _isUploading = true;
     _uploadTask!.snapshotEvents.listen(
-      (taskSnapshot) {
+      (taskSnapshot) async {
         switch (taskSnapshot.state) {
           case TaskState.running:
             break;
           case TaskState.paused:
             break;
           case TaskState.success:
-            taskSnapshot.ref.getDownloadURL().then(
+            await taskSnapshot.ref.getDownloadURL().then(
               (value) {
                 context.read<MessagesServices?>()!.updatePath(
                       widget.id,
@@ -158,8 +158,19 @@ class _OldAudioMessageState extends State<OldAudioMessage> {
                     );
               },
             );
-            _uploadTask = null;
-            setState(() => _isUploading = false);
+
+            _player.setFilePath(widget.path).then(
+              (value) {
+                if (value != null) {
+                  _duration = value;
+                  _isAvailable = true;
+                } else {
+                  _isAvailable = false;
+                }
+                _uploadTask = null;
+                setState(() => _isUploading = false);
+              },
+            );
 
             break;
           case TaskState.canceled:
@@ -201,7 +212,6 @@ class _OldAudioMessageState extends State<OldAudioMessage> {
                   _isAvailable = true;
                 } else {
                   _isAvailable = false;
-                  debugPrint('Error @@@@@@@@@@@@@@@@@@@@@@@@@@');
                 }
                 setState(() {
                   _isDownloading = false;

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:work_tracker/src/features/room/services/messages_services.dart';
 
-import 'firebase_options.dart';
 import 'src/features/Authentication/services/authentication_services.dart';
 import 'src/features/settings/services/theme_provider.dart';
 import 'src/features/profile/services/profile_service.dart';
@@ -14,9 +13,7 @@ import 'src/app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp();
 
   final ThemeProvider themeProvider = ThemeProvider();
   await themeProvider.initTheme();
